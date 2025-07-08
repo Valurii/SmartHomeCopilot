@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 import pytest
@@ -13,7 +14,11 @@ from pytest_homeassistant_custom_component.common import (
     async_test_home_assistant,
 )
 
-from custom_components.SmartHomeCopilot.const import DOMAIN, CONF_PROVIDER, CONFIG_VERSION
+from custom_components.SmartHomeCopilot.const import (
+    DOMAIN,
+    CONF_PROVIDER,
+    CONFIG_VERSION,
+)
 
 
 @pytest.mark.parametrize("expected_lingering_timers", [True])
@@ -22,7 +27,11 @@ async def test_async_setup_entry(expected_lingering_timers):
     """Test that the integration loads and creates sensors."""
     repo_root = Path(__file__).resolve().parents[1]
     kwargs = {
-        ("storage_dir" if "storage_dir" in signature(async_test_home_assistant).parameters else "config_dir"): str(repo_root)
+        (
+            "storage_dir"
+            if "storage_dir" in signature(async_test_home_assistant).parameters
+            else "config_dir"
+        ): str(repo_root)
     }
     with patch("homeassistant.util.dt.get_time_zone", return_value=ZoneInfo("UTC")):
         async with async_test_home_assistant(**kwargs) as hass:
@@ -42,6 +51,8 @@ async def test_async_setup_entry(expected_lingering_timers):
         await hass.async_block_till_done()
 
         assert entry.state == ConfigEntryState.LOADED
-        sensor_entities = [eid for eid in hass.states.async_entity_ids() if eid.startswith("sensor.")]
+        sensor_entities = [
+            eid for eid in hass.states.async_entity_ids() if eid.startswith("sensor.")
+        ]
         assert sensor_entities
         await hass.async_stop(force=True)

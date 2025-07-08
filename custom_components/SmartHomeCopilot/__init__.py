@@ -1,4 +1,5 @@
 """The AI Automation Suggester integration."""
+
 import logging
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, ServiceCall, callback
@@ -12,26 +13,30 @@ from .const import (
     SERVICE_GENERATE_SUGGESTIONS,
     ATTR_PROVIDER_CONFIG,
     ATTR_CUSTOM_PROMPT,
-    CONFIG_VERSION
+    CONFIG_VERSION,
 )
 from .coordinator import AIAutomationCoordinator
 
 _LOGGER = logging.getLogger(__name__)
+
 
 async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
     """Migrate old config entry if necessary."""
     _LOGGER.debug(f"async_migrate_entry {config_entry.version}")
     # Currently, no migration logic beyond ensuring version matches CONFIG_VERSION
     if config_entry.version < CONFIG_VERSION:
-        _LOGGER.debug(f"Migrating config entry from version {config_entry.version} to {CONFIG_VERSION}")
+        _LOGGER.debug(
+            f"Migrating config entry from version {config_entry.version} to {CONFIG_VERSION}"
+        )
         new_data = {**config_entry.data}
-        new_data.pop('scan_frequency', None)
-        new_data.pop('initial_lag_time', None)
+        new_data.pop("scan_frequency", None)
+        new_data.pop("initial_lag_time", None)
         config_entry.version = CONFIG_VERSION
         hass.config_entries.async_update_entry(config_entry, data=new_data)
         _LOGGER.debug("Migration successful")
         return True
     return True
+
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up the AI Automation Suggester component."""
@@ -49,7 +54,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
         # Parse domains if provided as a string or dict
         if isinstance(domains, str):
-            domains = [d.strip() for d in domains.split(',') if d.strip()]
+            domains = [d.strip() for d in domains.split(",") if d.strip()]
         elif isinstance(domains, dict):
             domains = list(domains.keys())
 
@@ -65,7 +70,9 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                         break
 
             if coordinator is None:
-                raise ServiceValidationError("No AI Automation Suggester provider configured")
+                raise ServiceValidationError(
+                    "No AI Automation Suggester provider configured"
+                )
 
             if custom_prompt:
                 original_prompt = coordinator.SYSTEM_PROMPT
@@ -97,12 +104,11 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
     # Register the service
     hass.services.async_register(
-        DOMAIN,
-        SERVICE_GENERATE_SUGGESTIONS,
-        handle_generate_suggestions
+        DOMAIN, SERVICE_GENERATE_SUGGESTIONS, handle_generate_suggestions
     )
 
     return True
+
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up AI Automation Suggester from a config entry."""
@@ -119,14 +125,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         _LOGGER.debug(
             "Setup complete for %s with provider %s",
             entry.title,
-            entry.data.get(CONF_PROVIDER)
+            entry.data.get(CONF_PROVIDER),
         )
 
         entry.async_on_unload(entry.add_update_listener(async_reload_entry))
 
         @callback
         def handle_custom_event(event):
-            _LOGGER.debug("Received custom event '%s', triggering suggestions with all_entities=True", event.event_type)
+            _LOGGER.debug(
+                "Received custom event '%s', triggering suggestions with all_entities=True",
+                event.event_type,
+            )
             hass.async_create_task(coordinator_request_all_suggestions())
 
         async def coordinator_request_all_suggestions():
@@ -134,13 +143,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             await coordinator.async_request_refresh()
             coordinator.scan_all = False
 
-        entry.async_on_unload(hass.bus.async_listen("ai_automation_suggester_update", handle_custom_event))
+        entry.async_on_unload(
+            hass.bus.async_listen("ai_automation_suggester_update", handle_custom_event)
+        )
 
         return True
 
     except Exception as err:
         _LOGGER.error("Failed to setup integration: %s", err)
         raise ConfigEntryNotReady from err
+
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
@@ -153,6 +165,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     except Exception as err:
         _LOGGER.error("Error unloading entry: %s", err)
         return False
+
 
 async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Reload config entry."""
