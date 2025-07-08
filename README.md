@@ -137,11 +137,11 @@ Leveraging the AI Automation Suggester provides several key benefits:
 ### Manual Installation
 
 1.  **Download** the contents of this repository.
-2.  **Copy** the `custom_components/ai_automation_suggester` folder to your Home Assistant `custom_components` directory.
+2.  **Copy** the `custom_components/SmartHomeCopilot` folder to your Home Assistant `custom_components` directory.
     ```bash
     <homeassistant_config_dir>/
     └── custom_components/
-        └── ai_automation_suggester/
+        └── SmartHomeCopilot/
             ├── __init__.py
             └── ... (other files)
     ```
@@ -432,7 +432,7 @@ For further questions, discussions, or assistance, please visit the GitHub repos
 ## ❓ FAQ
 
 **1. How do I update the integration?**
-If installed via HACS, update directly through the HACS interface in Home Assistant. If installed manually, download the latest version of the files from the repository and replace the existing ones in your `custom_components/ai_automation_suggester` folder, then restart Home Assistant.
+If installed via HACS, update directly through the HACS interface in Home Assistant. If installed manually, download the latest version of the files from the repository and replace the existing ones in your `custom_components/SmartHomeCopilot` folder, then restart Home Assistant.
 
 **2. Can I use this integration without a cloud API key?**
 Yes! You can use local AI models like those provided by LocalAI or Ollama running on your local network. This requires setting up and running the local AI server separately.

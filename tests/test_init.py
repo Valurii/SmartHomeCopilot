@@ -13,7 +13,7 @@ from pytest_homeassistant_custom_component.common import (
     async_test_home_assistant,
 )
 
-from custom_components.ai_automation_suggester.const import DOMAIN, CONF_PROVIDER, CONFIG_VERSION
+from custom_components.SmartHomeCopilot.const import DOMAIN, CONF_PROVIDER, CONFIG_VERSION
 
 
 @pytest.mark.parametrize("expected_lingering_timers", [True])
