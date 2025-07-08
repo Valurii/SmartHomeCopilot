@@ -6,10 +6,10 @@
 
 # AI Automation Suggester
 
-[![Validate with hassfest](https://img.shields.io/github/actions/workflow/status/fjoelnr/SmarHomeCopilot/hassfest.yaml?style=for-the-badge)]()
-[![HACS Validation](https://img.shields.io/github/actions/workflow/status/fjoelnr/SmarHomeCopilot/validate.yaml?style=for-the-badge)]()
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/fjoelnr/SmarHomeCopilot?style=for-the-badge)]()
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)]()
+[![Validate with hassfest](https://img.shields.io/github/actions/workflow/status/fjoelnr/SmarHomeCopilot/hassfest.yaml?style=for-the-badge)](https://github.com/fjoelnr/SmartHomeCopilot)
+[![HACS Validation](https://img.shields.io/github/actions/workflow/status/fjoelnr/SmarHomeCopilot/validate.yaml?style=for-the-badge)](https://github.com/fjoelnr/SmartHomeCopilot)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/fjoelnr/SmarHomeCopilot?style=for-the-badge)](https://github.com/fjoelnr/SmartHomeCopilot)
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://github.com/fjoelnr/SmartHomeCopilot)
 
 Inspired by the original project from ITSpecialist111.
 
