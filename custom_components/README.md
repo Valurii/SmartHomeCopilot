@@ -39,5 +39,6 @@ An AI-powered Home Assistant custom integration that suggests automations based 
    type: 'custom:SmartHome-Copilot-card'
 
 ```yaml
-type: moduleurl: /local/SmartHome_Copilot/SmartHome-Copilot-card.js
+type: module
+url: /local/SmartHome_Copilot/SmartHome-Copilot-card.js
 ```
