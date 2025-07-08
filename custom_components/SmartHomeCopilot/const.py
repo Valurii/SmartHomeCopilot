@@ -3,9 +3,9 @@
 # ─────────────────────────────────────────────────────────────
 # Core
 # ─────────────────────────────────────────────────────────────
-DOMAIN           = "ai_automation_suggester"
-PLATFORMS        = ["sensor"]
-CONFIG_VERSION   = 2  # config‑entry version (used by async_migrate_entry)
+DOMAIN = "ai_automation_suggester"
+PLATFORMS = ["sensor"]
+CONFIG_VERSION = 2  # config‑entry version (used by async_migrate_entry)
 INTEGRATION_NAME = "AI Automation Suggester"
 
 # ─────────────────────────────────────────────────────────────
@@ -132,7 +132,7 @@ SERVICE_GENERATE_SUGGESTIONS = "generate_suggestions"
 # ─────────────────────────────────────────────────────────────
 PROVIDER_STATUS_CONNECTED = "connected"
 PROVIDER_STATUS_DISCONNECTED = "disconnected"
-PROVIDER_STATUS_ERROR        = "error"
+PROVIDER_STATUS_ERROR = "error"
 PROVIDER_STATUS_INITIALIZING = "initializing"
 
 # ─────────────────────────────────────────────────────────────

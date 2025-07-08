@@ -68,7 +68,7 @@ PROVIDER_TO_MODEL_KEY_MAP: dict[str, str] = {
     "Mistral AI": CONF_MISTRAL_MODEL,
     "Perplexity AI": CONF_PERPLEXITY_MODEL,
     "OpenRouter": CONF_OPENROUTER_MODEL,
-    "OpenAI Azure": CONF_OPENAI_AZURE_DEPLOYMENT_ID,  
+    "OpenAI Azure": CONF_OPENAI_AZURE_DEPLOYMENT_ID,
 }
 
 SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
@@ -113,6 +113,7 @@ SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
     ),
 )
 
+
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: ConfigEntry,
@@ -136,13 +137,21 @@ async def async_setup_entry(
         )
 
         if description.key == SENSOR_KEY_SUGGESTIONS:
-            entities.append(AISuggestionsSensor(coordinator, entry, specific_description))
+            entities.append(
+                AISuggestionsSensor(coordinator, entry, specific_description)
+            )
         elif description.key == SENSOR_KEY_STATUS:
-            entities.append(AIProviderStatusSensor(coordinator, entry, specific_description))
+            entities.append(
+                AIProviderStatusSensor(coordinator, entry, specific_description)
+            )
         elif description.key == SENSOR_KEY_INPUT_TOKENS:
-            entities.append(MaxInputTokensSensor(coordinator, entry, specific_description))
+            entities.append(
+                MaxInputTokensSensor(coordinator, entry, specific_description)
+            )
         elif description.key == SENSOR_KEY_OUTPUT_TOKENS:
-            entities.append(MaxOutputTokensSensor(coordinator, entry, specific_description))
+            entities.append(
+                MaxOutputTokensSensor(coordinator, entry, specific_description)
+            )
         elif description.key == SENSOR_KEY_MODEL:
             entities.append(AIModelSensor(coordinator, entry, specific_description))
         elif description.key == SENSOR_KEY_LAST_ERROR:
@@ -150,9 +159,9 @@ async def async_setup_entry(
         else:
             entities.append(AIBaseSensor(coordinator, entry, specific_description))
 
-
     async_add_entities(entities, True)
     _LOGGER.debug("Sensor platform setup complete for provider: %s", provider_name)
+
 
 # ─────────────────────────────────────────────────────────────
 # Base sensor
@@ -169,7 +178,7 @@ class AIBaseSensor(CoordinatorEntity[DataUpdateCoordinator], SensorEntity):
         """Initialize the sensor."""
         super().__init__(coordinator)
         self.entity_description = description
-        self._attr_unique_id = f"{entry.entry_id}_{description.key}"        
+        self._attr_unique_id = f"{entry.entry_id}_{description.key}"
         self._entry = entry
         self._provider_name = entry.data.get(CONF_PROVIDER, "Unknown Provider")
 
@@ -180,7 +189,7 @@ class AIBaseSensor(CoordinatorEntity[DataUpdateCoordinator], SensorEntity):
             manufacturer="Community",
             model=self._provider_name,
             sw_version=str(entry.version) if entry.version else "N/A",
-            configuration_url=None, # Link Github?
+            configuration_url=None,  # Link Github?
         )
 
     @property
@@ -204,14 +213,16 @@ class AIBaseSensor(CoordinatorEntity[DataUpdateCoordinator], SensorEntity):
         _LOGGER.debug(
             "Sensor %s._update_state_and_attributes not fully implemented for key %s",
             self.__class__.__name__,
-            self.entity_description.key
+            self.entity_description.key,
         )
+
 
 # ─────────────────────────────────────────────────────────────
 # Suggestions sensor
 # ─────────────────────────────────────────────────────────────
 class AISuggestionsSensor(AIBaseSensor):
     """Shows the availability of new AI suggestions."""
+
     _attr_should_poll = False
 
     def __init__(
@@ -243,15 +254,20 @@ class AISuggestionsSensor(AIBaseSensor):
         if self.coordinator.data:
             self._update_state_and_attributes()
 
-
     def _update_state_and_attributes(self) -> None:
         """Update sensor state and attributes."""
         data = self.coordinator.data or {}
         suggestions = data.get("suggestions")
         last_update_timestamp = data.get("last_update")
 
-        if suggestions and suggestions not in ("No suggestions available", "No suggestions yet"):
-            if last_update_timestamp and (self._previous_suggestions_timestamp is None or last_update_timestamp > self._previous_suggestions_timestamp):
+        if suggestions and suggestions not in (
+            "No suggestions available",
+            "No suggestions yet",
+        ):
+            if last_update_timestamp and (
+                self._previous_suggestions_timestamp is None
+                or last_update_timestamp > self._previous_suggestions_timestamp
+            ):
                 self._attr_native_value = "New Suggestions Available"
                 self._previous_suggestions_timestamp = last_update_timestamp
             else:
@@ -266,14 +282,16 @@ class AISuggestionsSensor(AIBaseSensor):
             "last_update": data.get("last_update"),
             "entities_processed": data.get("entities_processed", []),
             "provider": self._entry.data.get(CONF_PROVIDER, "unknown"),
-            "entities_processed_count": len(data.get("entities_processed", [])),            
+            "entities_processed_count": len(data.get("entities_processed", [])),
         }
+
 
 # ─────────────────────────────────────────────────────────────
 # Provider‑status sensor
 # ─────────────────────────────────────────────────────────────
 class AIProviderStatusSensor(AIBaseSensor):
     """Indicates whether the configured provider is reachable."""
+
     _attr_should_poll = False
 
     def __init__(
@@ -295,7 +313,7 @@ class AIProviderStatusSensor(AIBaseSensor):
         elif data.get("last_error"):
             self._attr_native_value = PROVIDER_STATUS_ERROR
         elif "suggestions" in data:
-             self._attr_native_value = PROVIDER_STATUS_CONNECTED
+            self._attr_native_value = PROVIDER_STATUS_CONNECTED
         else:
             self._attr_native_value = PROVIDER_STATUS_DISCONNECTED
 
@@ -304,11 +322,13 @@ class AIProviderStatusSensor(AIBaseSensor):
             "last_attempted_update": data.get("last_update"),
         }
 
+
 # ─────────────────────────────────────────────────────────────
 # Max Input Token Sensors
 # ─────────────────────────────────────────────────────────────
 class MaxInputTokensSensor(AIBaseSensor):
     """Shows the configured maximum input tokens."""
+
     _attr_should_poll = False
 
     def __init__(
@@ -318,20 +338,22 @@ class MaxInputTokensSensor(AIBaseSensor):
         description: SensorEntityDescription,
     ) -> None:
         super().__init__(coordinator, entry, description)
-        self._update_state_and_attributes() # Initial update
+        self._update_state_and_attributes()  # Initial update
 
     def _update_state_and_attributes(self) -> None:
         """Update sensor state from config entry options or data."""
         self._attr_native_value = self._entry.options.get(
             CONF_MAX_INPUT_TOKENS,
-            self._entry.data.get(CONF_MAX_INPUT_TOKENS, DEFAULT_MAX_INPUT_TOKENS)
+            self._entry.data.get(CONF_MAX_INPUT_TOKENS, DEFAULT_MAX_INPUT_TOKENS),
         )
+
 
 # ─────────────────────────────────────────────────────────────
 # Max Output Token Sensors
 # ─────────────────────────────────────────────────────────────
 class MaxOutputTokensSensor(AIBaseSensor):
     """Shows the configured maximum output tokens."""
+
     _attr_should_poll = False
 
     def __init__(
@@ -341,20 +363,22 @@ class MaxOutputTokensSensor(AIBaseSensor):
         description: SensorEntityDescription,
     ) -> None:
         super().__init__(coordinator, entry, description)
-        self._update_state_and_attributes() # Initial update
+        self._update_state_and_attributes()  # Initial update
 
     def _update_state_and_attributes(self) -> None:
         """Update sensor state from config entry options or data."""
         self._attr_native_value = self._entry.options.get(
             CONF_MAX_OUTPUT_TOKENS,
-            self._entry.data.get(CONF_MAX_OUTPUT_TOKENS, DEFAULT_MAX_OUTPUT_TOKENS)
+            self._entry.data.get(CONF_MAX_OUTPUT_TOKENS, DEFAULT_MAX_OUTPUT_TOKENS),
         )
+
 
 # ─────────────────────────────────────────────────────────────
 # Model Sensor
 # ─────────────────────────────────────────────────────────────
 class AIModelSensor(AIBaseSensor):
     """Shows the currently configured AI model."""
+
     _attr_should_poll = False
 
     def __init__(
@@ -379,16 +403,24 @@ class AIModelSensor(AIBaseSensor):
             _LOGGER.warning("No model key found for provider: %s", provider)
             return
 
-        self._attr_native_value = self._entry.options.get(
-            model_key,
-            self._entry.data.get(model_key, DEFAULT_MODELS.get(provider, "unknown"))
-        ) if model_key else "unknown"
+        self._attr_native_value = (
+            self._entry.options.get(
+                model_key,
+                self._entry.data.get(
+                    model_key, DEFAULT_MODELS.get(provider, "unknown")
+                ),
+            )
+            if model_key
+            else "unknown"
+        )
+
 
 # ─────────────────────────────────────────────────────────────
 # Last Error sensor
 # ─────────────────────────────────────────────────────────────
 class AILastErrorSensor(AIBaseSensor):
     """Shows the last error message from the AI provider."""
+
     _attr_should_poll = False
 
     def __init__(
@@ -398,7 +430,7 @@ class AILastErrorSensor(AIBaseSensor):
         description: SensorEntityDescription,
     ) -> None:
         super().__init__(coordinator, entry, description)
-        self._update_state_and_attributes() # Initial update
+        self._update_state_and_attributes()  # Initial update
 
     def _update_state_and_attributes(self) -> None:
         """Update sensor state with the last error message."""
@@ -406,5 +438,5 @@ class AILastErrorSensor(AIBaseSensor):
         last_error = data.get("last_error")
         self._attr_native_value = str(last_error) if last_error else "No Error"
         self._attr_extra_state_attributes = {
-             "last_error_timestamp": data.get("last_update") if last_error else None,
+            "last_error_timestamp": data.get("last_update") if last_error else None,
         }
