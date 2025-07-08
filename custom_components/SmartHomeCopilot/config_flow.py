@@ -20,9 +20,6 @@ from .const import (  # noqa: E501  (long import list)
     CONF_MAX_OUTPUT_TOKENS,
     DEFAULT_MAX_INPUT_TOKENS,
     DEFAULT_MAX_OUTPUT_TOKENS,
-    # Legacy fallback (kept for migration)
-    CONF_MAX_TOKENS,
-    DEFAULT_MAX_TOKENS,
     DEFAULT_MODELS,
     # Provider‑specific
     CONF_OPENAI_API_KEY,
@@ -73,6 +70,7 @@ from .const import (  # noqa: E501  (long import list)
 
 _LOGGER = logging.getLogger(__name__)
 
+
 # ─────────────────────────────────────────────────────────────
 # Lightweight provider validators (unchanged)
 # ─────────────────────────────────────────────────────────────
@@ -85,7 +83,9 @@ class ProviderValidator:
     async def validate_openai(self, api_key: str) -> Optional[str]:
         hdr = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
         try:
-            resp = await self.session.get("https://api.openai.com/v1/models", headers=hdr)
+            resp = await self.session.get(
+                "https://api.openai.com/v1/models", headers=hdr
+            )
             return None if resp.status == 200 else await resp.text()
         except Exception as err:  # noqa: BLE001
             return str(err)
@@ -98,18 +98,25 @@ class ProviderValidator:
         }
         payload = {
             "model": model,
-            "messages": [{"role": "user", "content": [{"type": "text", "text": "ping"}]}],
+            "messages": [
+                {"role": "user", "content": [{"type": "text", "text": "ping"}]}
+            ],
             "max_tokens": 1,
         }
         try:
-            resp = await self.session.post("https://api.anthropic.com/v1/messages", headers=hdr, json=payload)
+            resp = await self.session.post(
+                "https://api.anthropic.com/v1/messages", headers=hdr, json=payload
+            )
             return None if resp.status == 200 else await resp.text()
         except Exception as err:
             return str(err)
 
     async def validate_google(self, api_key: str, model: str) -> Optional[str]:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
-        payload = {"contents": [{"parts": [{"text": "ping"}]}], "generationConfig": {"maxOutputTokens": 1}}
+        payload = {
+            "contents": [{"parts": [{"text": "ping"}]}],
+            "generationConfig": {"maxOutputTokens": 1},
+        }
         try:
             resp = await self.session.post(url, json=payload)
             return None if resp.status == 200 else await resp.text()
@@ -119,7 +126,9 @@ class ProviderValidator:
     async def validate_groq(self, api_key: str) -> Optional[str]:
         hdr = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
         try:
-            resp = await self.session.get("https://api.groq.com/openai/v1/models", headers=hdr)
+            resp = await self.session.get(
+                "https://api.groq.com/openai/v1/models", headers=hdr
+            )
             return None if resp.status == 200 else await resp.text()
         except Exception as err:
             return str(err)
@@ -140,7 +149,9 @@ class ProviderValidator:
         except Exception as err:
             return str(err)
 
-    async def validate_custom_openai(self, endpoint: str, api_key: str | None) -> Optional[str]:
+    async def validate_custom_openai(
+        self, endpoint: str, api_key: str | None
+    ) -> Optional[str]:
         hdr = {"Content-Type": "application/json"}
         if api_key:
             hdr["Authorization"] = f"Bearer {api_key}"
@@ -152,9 +163,15 @@ class ProviderValidator:
 
     async def validate_perplexity(self, api_key: str, model: str) -> Optional[str]:
         hdr = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
-        payload = {"model": model, "messages": [{"role": "user", "content": "ping"}], "max_tokens": 1}
+        payload = {
+            "model": model,
+            "messages": [{"role": "user", "content": "ping"}],
+            "max_tokens": 1,
+        }
         try:
-            resp = await self.session.post(ENDPOINT_PERPLEXITY, headers=hdr, json=payload)
+            resp = await self.session.post(
+                ENDPOINT_PERPLEXITY, headers=hdr, json=payload
+            )
             return None if resp.status == 200 else await resp.text()
         except Exception as err:
             return str(err)
@@ -192,7 +209,10 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             self.provider = user_input[CONF_PROVIDER]
             self.data.update(user_input)
 
-            if any(ent.data.get(CONF_PROVIDER) == self.provider for ent in self._async_current_entries()):
+            if any(
+                ent.data.get(CONF_PROVIDER) == self.provider
+                for ent in self._async_current_entries()
+            ):
                 errors["base"] = "already_configured"
             else:
                 return await {
@@ -248,33 +268,48 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             self.validator = ProviderValidator(self.hass)
             err = await validate_fn(user_input)
             if err is None:
-                self.data.update({
-                **user_input,
-                CONF_MAX_INPUT_TOKENS: user_input.get(CONF_MAX_INPUT_TOKENS, DEFAULT_MAX_INPUT_TOKENS),
-                CONF_MAX_OUTPUT_TOKENS: user_input.get(CONF_MAX_OUTPUT_TOKENS, DEFAULT_MAX_OUTPUT_TOKENS),
-            })
+                self.data.update(
+                    {
+                        **user_input,
+                        CONF_MAX_INPUT_TOKENS: user_input.get(
+                            CONF_MAX_INPUT_TOKENS, DEFAULT_MAX_INPUT_TOKENS
+                        ),
+                        CONF_MAX_OUTPUT_TOKENS: user_input.get(
+                            CONF_MAX_OUTPUT_TOKENS, DEFAULT_MAX_OUTPUT_TOKENS
+                        ),
+                    }
+                )
                 return self.async_create_entry(title=title, data=self.data)
             errors["base"] = "api_error"
             placeholders["error_message"] = err
 
-        return self.async_show_form(step_id=step_id, data_schema=schema, errors=errors, description_placeholders=placeholders)
+        return self.async_show_form(
+            step_id=step_id,
+            data_schema=schema,
+            errors=errors,
+            description_placeholders=placeholders,
+        )
 
     # ───────── provider‑specific steps (OpenAI shown; others similar) ─────────
     def _add_token_fields(self, base: Dict[Any, Any]) -> Dict[Any, Any]:
         """Append the two token sliders to the schema."""
-        base[vol.Optional(CONF_MAX_INPUT_TOKENS, default=DEFAULT_MAX_INPUT_TOKENS)] = vol.All(
-            vol.Coerce(int), vol.Range(min=100)
+        base[vol.Optional(CONF_MAX_INPUT_TOKENS, default=DEFAULT_MAX_INPUT_TOKENS)] = (
+            vol.All(vol.Coerce(int), vol.Range(min=100))
         )
-        base[vol.Optional(CONF_MAX_OUTPUT_TOKENS, default=DEFAULT_MAX_OUTPUT_TOKENS)] = vol.All(
-            vol.Coerce(int), vol.Range(min=100)
-        )
+        base[
+            vol.Optional(CONF_MAX_OUTPUT_TOKENS, default=DEFAULT_MAX_OUTPUT_TOKENS)
+        ] = vol.All(vol.Coerce(int), vol.Range(min=100))
         return base
 
     async def async_step_openai(self, user_input=None):
         schema = {
-            vol.Required(CONF_OPENAI_API_KEY): TextSelector(TextSelectorConfig(type="password")),
+            vol.Required(CONF_OPENAI_API_KEY): TextSelector(
+                TextSelectorConfig(type="password")
+            ),
             vol.Optional(CONF_OPENAI_MODEL, default=DEFAULT_MODELS["OpenAI"]): str,
-            vol.Optional(CONF_OPENAI_TEMPERATURE, default=DEFAULT_TEMPERATURE): vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0)),
+            vol.Optional(CONF_OPENAI_TEMPERATURE, default=DEFAULT_TEMPERATURE): vol.All(
+                vol.Coerce(float), vol.Range(min=0.0, max=2.0)
+            ),
         }
         self._add_token_fields(schema)
         return await self._provider_form(
@@ -290,13 +325,20 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_anthropic(self, user_input=None):
         async def _v(ui):
             return await self.validator.validate_anthropic(
-                ui[CONF_ANTHROPIC_API_KEY], ui.get(CONF_ANTHROPIC_MODEL, DEFAULT_MODELS["Anthropic"])
+                ui[CONF_ANTHROPIC_API_KEY],
+                ui.get(CONF_ANTHROPIC_MODEL, DEFAULT_MODELS["Anthropic"]),
             )
 
         schema = {
-            vol.Required(CONF_ANTHROPIC_API_KEY): TextSelector(TextSelectorConfig(type="password")),
-            vol.Optional(CONF_ANTHROPIC_MODEL, default=DEFAULT_MODELS["Anthropic"]): str,
-            vol.Optional(CONF_ANTHROPIC_TEMPERATURE, default=DEFAULT_TEMPERATURE): vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0)),
+            vol.Required(CONF_ANTHROPIC_API_KEY): TextSelector(
+                TextSelectorConfig(type="password")
+            ),
+            vol.Optional(
+                CONF_ANTHROPIC_MODEL, default=DEFAULT_MODELS["Anthropic"]
+            ): str,
+            vol.Optional(
+                CONF_ANTHROPIC_TEMPERATURE, default=DEFAULT_TEMPERATURE
+            ): vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0)),
         }
         self._add_token_fields(schema)
         return await self._provider_form(
@@ -312,13 +354,18 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_google(self, user_input=None):
         async def _v(ui):
             return await self.validator.validate_google(
-                ui[CONF_GOOGLE_API_KEY], ui.get(CONF_GOOGLE_MODEL, DEFAULT_MODELS["Google"])
+                ui[CONF_GOOGLE_API_KEY],
+                ui.get(CONF_GOOGLE_MODEL, DEFAULT_MODELS["Google"]),
             )
 
         schema = {
-            vol.Required(CONF_GOOGLE_API_KEY): TextSelector(TextSelectorConfig(type="password")),
+            vol.Required(CONF_GOOGLE_API_KEY): TextSelector(
+                TextSelectorConfig(type="password")
+            ),
             vol.Optional(CONF_GOOGLE_MODEL, default=DEFAULT_MODELS["Google"]): str,
-            vol.Optional(CONF_GOOGLE_TEMPERATURE, default=DEFAULT_TEMPERATURE): vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0)),
+            vol.Optional(CONF_GOOGLE_TEMPERATURE, default=DEFAULT_TEMPERATURE): vol.All(
+                vol.Coerce(float), vol.Range(min=0.0, max=2.0)
+            ),
         }
         self._add_token_fields(schema)
         return await self._provider_form(
@@ -333,7 +380,9 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_groq(self, user_input=None):
         schema = {
-            vol.Required(CONF_GROQ_API_KEY): TextSelector(TextSelectorConfig(type="password")),
+            vol.Required(CONF_GROQ_API_KEY): TextSelector(
+                TextSelectorConfig(type="password")
+            ),
             vol.Optional(CONF_GROQ_MODEL, default=DEFAULT_MODELS["Groq"]): str,
             vol.Optional(CONF_GROQ_TEMPERATURE, default=DEFAULT_TEMPERATURE): vol.All(
                 vol.Coerce(float), vol.Range(min=0.0, max=2.0)
@@ -352,20 +401,24 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_localai(self, user_input=None):
         async def _v(ui):
-            return await self.validator.validate_localai(ui[CONF_LOCALAI_IP_ADDRESS], ui[CONF_LOCALAI_PORT], ui[CONF_LOCALAI_HTTPS])
+            return await self.validator.validate_localai(
+                ui[CONF_LOCALAI_IP_ADDRESS],
+                ui[CONF_LOCALAI_PORT],
+                ui[CONF_LOCALAI_HTTPS],
+            )
 
         schema = {
             vol.Required(CONF_LOCALAI_IP_ADDRESS): str,
             vol.Required(CONF_LOCALAI_PORT, default=8080): int,
             vol.Required(CONF_LOCALAI_HTTPS, default=False): bool,
             vol.Optional(CONF_LOCALAI_MODEL, default=DEFAULT_MODELS["LocalAI"]): str,
-            vol.Optional(CONF_LOCALAI_TEMPERATURE, default=DEFAULT_TEMPERATURE): vol.All(
-                vol.Coerce(float), vol.Range(min=0.0, max=2.0)
-            ),
+            vol.Optional(
+                CONF_LOCALAI_TEMPERATURE, default=DEFAULT_TEMPERATURE
+            ): vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0)),
         }
         self._add_token_fields(schema)
         return await self._provider_form(
-            "localai", 
+            "localai",
             vol.Schema(schema),
             _v,
             "AI Automation Suggester (LocalAI)",
@@ -376,7 +429,9 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_ollama(self, user_input=None):
         async def _v(ui):
-            return await self.validator.validate_ollama(ui[CONF_OLLAMA_IP_ADDRESS], ui[CONF_OLLAMA_PORT], ui[CONF_OLLAMA_HTTPS])
+            return await self.validator.validate_ollama(
+                ui[CONF_OLLAMA_IP_ADDRESS], ui[CONF_OLLAMA_PORT], ui[CONF_OLLAMA_HTTPS]
+            )
 
         schema = {
             vol.Required(CONF_OLLAMA_IP_ADDRESS): str,
@@ -387,7 +442,6 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Coerce(float), vol.Range(min=0.0, max=2.0)
             ),
             vol.Optional(CONF_OLLAMA_DISABLE_THINK, default=False): bool,
-   
         }
         self._add_token_fields(schema)
         return await self._provider_form(
@@ -402,13 +456,21 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_custom_openai(self, user_input=None):
         async def _v(ui):
-            return await self.validator.validate_custom_openai(ui[CONF_CUSTOM_OPENAI_ENDPOINT], ui.get(CONF_CUSTOM_OPENAI_API_KEY))
+            return await self.validator.validate_custom_openai(
+                ui[CONF_CUSTOM_OPENAI_ENDPOINT], ui.get(CONF_CUSTOM_OPENAI_API_KEY)
+            )
 
         schema = {
             vol.Required(CONF_CUSTOM_OPENAI_ENDPOINT): str,
-            vol.Optional(CONF_CUSTOM_OPENAI_API_KEY): TextSelector(TextSelectorConfig(type="password")),
-            vol.Optional(CONF_CUSTOM_OPENAI_MODEL, default=DEFAULT_MODELS["Custom OpenAI"]): str,
-            vol.Optional(CONF_CUSTOM_OPENAI_TEMPERATURE, default=DEFAULT_TEMPERATURE): vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0)),
+            vol.Optional(CONF_CUSTOM_OPENAI_API_KEY): TextSelector(
+                TextSelectorConfig(type="password")
+            ),
+            vol.Optional(
+                CONF_CUSTOM_OPENAI_MODEL, default=DEFAULT_MODELS["Custom OpenAI"]
+            ): str,
+            vol.Optional(
+                CONF_CUSTOM_OPENAI_TEMPERATURE, default=DEFAULT_TEMPERATURE
+            ): vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0)),
         }
         self._add_token_fields(schema)
         return await self._provider_form(
@@ -425,14 +487,18 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_mistral(self, user_input=None):
         if user_input:
             self.data.update(user_input)
-            return self.async_create_entry(title="AI Automation Suggester (Mistral AI)", data=self.data)
+            return self.async_create_entry(
+                title="AI Automation Suggester (Mistral AI)", data=self.data
+            )
 
         schema = {
-            vol.Required(CONF_MISTRAL_API_KEY): TextSelector(TextSelectorConfig(type="password")),
-            vol.Optional(CONF_MISTRAL_MODEL, default=DEFAULT_MODELS["Mistral AI"]): str,
-            vol.Optional(CONF_MISTRAL_TEMPERATURE, default=DEFAULT_TEMPERATURE): vol.All(
-                vol.Coerce(float), vol.Range(min=0.0, max=2.0)
+            vol.Required(CONF_MISTRAL_API_KEY): TextSelector(
+                TextSelectorConfig(type="password")
             ),
+            vol.Optional(CONF_MISTRAL_MODEL, default=DEFAULT_MODELS["Mistral AI"]): str,
+            vol.Optional(
+                CONF_MISTRAL_TEMPERATURE, default=DEFAULT_TEMPERATURE
+            ): vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0)),
         }
         self._add_token_fields(schema)
         return self.async_show_form(step_id="mistral", data_schema=vol.Schema(schema))
@@ -440,15 +506,20 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_perplexity(self, user_input=None):
         async def _v(ui):
             return await self.validator.validate_perplexity(
-                ui[CONF_PERPLEXITY_API_KEY], ui.get(CONF_PERPLEXITY_MODEL, DEFAULT_MODELS["Perplexity AI"])
+                ui[CONF_PERPLEXITY_API_KEY],
+                ui.get(CONF_PERPLEXITY_MODEL, DEFAULT_MODELS["Perplexity AI"]),
             )
 
         schema = {
-            vol.Required(CONF_PERPLEXITY_API_KEY): TextSelector(TextSelectorConfig(type="password")),
-            vol.Optional(CONF_PERPLEXITY_MODEL, default=DEFAULT_MODELS["Perplexity AI"]): str,
-            vol.Optional(CONF_PERPLEXITY_TEMPERATURE, default=DEFAULT_TEMPERATURE): vol.All(
-                vol.Coerce(float), vol.Range(min=0.0, max=2.0)
+            vol.Required(CONF_PERPLEXITY_API_KEY): TextSelector(
+                TextSelectorConfig(type="password")
             ),
+            vol.Optional(
+                CONF_PERPLEXITY_MODEL, default=DEFAULT_MODELS["Perplexity AI"]
+            ): str,
+            vol.Optional(
+                CONF_PERPLEXITY_TEMPERATURE, default=DEFAULT_TEMPERATURE
+            ): vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0)),
         }
         self._add_token_fields(schema)
         return await self._provider_form(
@@ -469,7 +540,9 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
 
         schema = {
-            vol.Required(CONF_OPENROUTER_API_KEY): TextSelector(TextSelectorConfig(type="password")),
+            vol.Required(CONF_OPENROUTER_API_KEY): TextSelector(
+                TextSelectorConfig(type="password")
+            ),
             vol.Optional(
                 CONF_OPENROUTER_MODEL, default=DEFAULT_MODELS["OpenRouter"]
             ): str,
@@ -493,16 +566,31 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_openai_azure(self, user_input=None):
         async def _v(ui):
-            if not ui.get(CONF_OPENAI_AZURE_API_KEY) or not ui.get(CONF_OPENAI_AZURE_DEPLOYMENT_ID) or not ui.get(CONF_OPENAI_AZURE_API_VERSION):
+            if (
+                not ui.get(CONF_OPENAI_AZURE_API_KEY)
+                or not ui.get(CONF_OPENAI_AZURE_DEPLOYMENT_ID)
+                or not ui.get(CONF_OPENAI_AZURE_API_VERSION)
+            ):
                 return "All fields are required"
             return None
 
         schema = {
-            vol.Required(CONF_OPENAI_AZURE_API_KEY): TextSelector(TextSelectorConfig(type="password")),
-            vol.Optional(CONF_OPENAI_AZURE_DEPLOYMENT_ID, default=DEFAULT_MODELS["OpenAI Azure"]): str,
-            vol.Optional(CONF_OPENAI_AZURE_ENDPOINT, default="{your-resource-name}.openai.azure.com"): str,
-            vol.Optional(CONF_OPENAI_AZURE_API_VERSION, default="2025-01-01-preview"): str,
-            vol.Optional(CONF_OPENAI_AZURE_TEMPERATURE, default=DEFAULT_TEMPERATURE): vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0)),
+            vol.Required(CONF_OPENAI_AZURE_API_KEY): TextSelector(
+                TextSelectorConfig(type="password")
+            ),
+            vol.Optional(
+                CONF_OPENAI_AZURE_DEPLOYMENT_ID, default=DEFAULT_MODELS["OpenAI Azure"]
+            ): str,
+            vol.Optional(
+                CONF_OPENAI_AZURE_ENDPOINT,
+                default="{your-resource-name}.openai.azure.com",
+            ): str,
+            vol.Optional(
+                CONF_OPENAI_AZURE_API_VERSION, default="2025-01-01-preview"
+            ): str,
+            vol.Optional(
+                CONF_OPENAI_AZURE_TEMPERATURE, default=DEFAULT_TEMPERATURE
+            ): vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0)),
         }
         self._add_token_fields(schema)
         return await self._provider_form(
@@ -543,76 +631,332 @@ class AIAutomationOptionsFlowHandler(config_entries.OptionsFlow):
                 **user_input,
                 CONF_MAX_INPUT_TOKENS: user_input.get(
                     CONF_MAX_INPUT_TOKENS,
-                    self._get_option(CONF_MAX_INPUT_TOKENS, DEFAULT_MAX_INPUT_TOKENS)
+                    self._get_option(CONF_MAX_INPUT_TOKENS, DEFAULT_MAX_INPUT_TOKENS),
                 ),
                 CONF_MAX_OUTPUT_TOKENS: user_input.get(
                     CONF_MAX_OUTPUT_TOKENS,
-                    self._get_option(CONF_MAX_OUTPUT_TOKENS, DEFAULT_MAX_OUTPUT_TOKENS)
+                    self._get_option(CONF_MAX_OUTPUT_TOKENS, DEFAULT_MAX_OUTPUT_TOKENS),
                 ),
             }
             return self.async_create_entry(title="", data=new_data)
 
         provider = self.config_entry.data.get(CONF_PROVIDER)
         schema: Dict[Any, Any] = {
-            vol.Optional(CONF_MAX_INPUT_TOKENS, default=self._get_option(CONF_MAX_INPUT_TOKENS, DEFAULT_MAX_INPUT_TOKENS)
+            vol.Optional(
+                CONF_MAX_INPUT_TOKENS,
+                default=self._get_option(
+                    CONF_MAX_INPUT_TOKENS, DEFAULT_MAX_INPUT_TOKENS
+                ),
             ): vol.All(vol.Coerce(int), vol.Range(min=100)),
-            vol.Optional(CONF_MAX_OUTPUT_TOKENS, default=self._get_option(CONF_MAX_OUTPUT_TOKENS, DEFAULT_MAX_OUTPUT_TOKENS)
+            vol.Optional(
+                CONF_MAX_OUTPUT_TOKENS,
+                default=self._get_option(
+                    CONF_MAX_OUTPUT_TOKENS, DEFAULT_MAX_OUTPUT_TOKENS
+                ),
             ): vol.All(vol.Coerce(int), vol.Range(min=100)),
         }
 
         # provider‑specific editable fields
         if provider == "OpenAI":
-            schema[vol.Optional(CONF_OPENAI_API_KEY, default=self._get_option(CONF_OPENAI_API_KEY))] = TextSelector(TextSelectorConfig(type="password"))
-            schema[vol.Optional(CONF_OPENAI_MODEL, default=self._get_option(CONF_OPENAI_MODEL, DEFAULT_MODELS["OpenAI"]))] = str
-            schema[vol.Optional(CONF_OPENAI_TEMPERATURE, default=self._get_option(CONF_OPENAI_TEMPERATURE, DEFAULT_TEMPERATURE))] = vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0))
+            schema[
+                vol.Optional(
+                    CONF_OPENAI_API_KEY, default=self._get_option(CONF_OPENAI_API_KEY)
+                )
+            ] = TextSelector(TextSelectorConfig(type="password"))
+            schema[
+                vol.Optional(
+                    CONF_OPENAI_MODEL,
+                    default=self._get_option(
+                        CONF_OPENAI_MODEL, DEFAULT_MODELS["OpenAI"]
+                    ),
+                )
+            ] = str
+            schema[
+                vol.Optional(
+                    CONF_OPENAI_TEMPERATURE,
+                    default=self._get_option(
+                        CONF_OPENAI_TEMPERATURE, DEFAULT_TEMPERATURE
+                    ),
+                )
+            ] = vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0))
         elif provider == "Anthropic":
-            schema[vol.Optional(CONF_ANTHROPIC_API_KEY, default=self._get_option(CONF_ANTHROPIC_API_KEY))] = TextSelector(TextSelectorConfig(type="password"))
-            schema[vol.Optional(CONF_ANTHROPIC_MODEL, default=self._get_option(CONF_ANTHROPIC_MODEL, DEFAULT_MODELS["Anthropic"]))] = str
-            schema[vol.Optional(CONF_ANTHROPIC_TEMPERATURE, default=self._get_option(CONF_ANTHROPIC_TEMPERATURE, DEFAULT_TEMPERATURE))] = vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0))
+            schema[
+                vol.Optional(
+                    CONF_ANTHROPIC_API_KEY,
+                    default=self._get_option(CONF_ANTHROPIC_API_KEY),
+                )
+            ] = TextSelector(TextSelectorConfig(type="password"))
+            schema[
+                vol.Optional(
+                    CONF_ANTHROPIC_MODEL,
+                    default=self._get_option(
+                        CONF_ANTHROPIC_MODEL, DEFAULT_MODELS["Anthropic"]
+                    ),
+                )
+            ] = str
+            schema[
+                vol.Optional(
+                    CONF_ANTHROPIC_TEMPERATURE,
+                    default=self._get_option(
+                        CONF_ANTHROPIC_TEMPERATURE, DEFAULT_TEMPERATURE
+                    ),
+                )
+            ] = vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0))
         elif provider == "Google":
-            schema[vol.Optional(CONF_GOOGLE_API_KEY, default=self._get_option(CONF_GOOGLE_API_KEY))] = TextSelector(TextSelectorConfig(type="password"))
-            schema[vol.Optional(CONF_GOOGLE_MODEL, default=self._get_option(CONF_GOOGLE_MODEL, DEFAULT_MODELS["Google"]))] = str
-            schema[vol.Optional(CONF_GOOGLE_TEMPERATURE, default=self._get_option(CONF_GOOGLE_TEMPERATURE, DEFAULT_TEMPERATURE))] = vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0))
+            schema[
+                vol.Optional(
+                    CONF_GOOGLE_API_KEY, default=self._get_option(CONF_GOOGLE_API_KEY)
+                )
+            ] = TextSelector(TextSelectorConfig(type="password"))
+            schema[
+                vol.Optional(
+                    CONF_GOOGLE_MODEL,
+                    default=self._get_option(
+                        CONF_GOOGLE_MODEL, DEFAULT_MODELS["Google"]
+                    ),
+                )
+            ] = str
+            schema[
+                vol.Optional(
+                    CONF_GOOGLE_TEMPERATURE,
+                    default=self._get_option(
+                        CONF_GOOGLE_TEMPERATURE, DEFAULT_TEMPERATURE
+                    ),
+                )
+            ] = vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0))
         elif provider == "Groq":
-            schema[vol.Optional(CONF_GROQ_API_KEY, default=self._get_option(CONF_GROQ_API_KEY))] = TextSelector(TextSelectorConfig(type="password"))
-            schema[vol.Optional(CONF_GROQ_MODEL, default=self._get_option(CONF_GROQ_MODEL, DEFAULT_MODELS["Groq"]))] = str
-            schema[vol.Optional(CONF_GROQ_TEMPERATURE, default=self._get_option(CONF_GROQ_TEMPERATURE, DEFAULT_TEMPERATURE))] = vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0))
+            schema[
+                vol.Optional(
+                    CONF_GROQ_API_KEY, default=self._get_option(CONF_GROQ_API_KEY)
+                )
+            ] = TextSelector(TextSelectorConfig(type="password"))
+            schema[
+                vol.Optional(
+                    CONF_GROQ_MODEL,
+                    default=self._get_option(CONF_GROQ_MODEL, DEFAULT_MODELS["Groq"]),
+                )
+            ] = str
+            schema[
+                vol.Optional(
+                    CONF_GROQ_TEMPERATURE,
+                    default=self._get_option(
+                        CONF_GROQ_TEMPERATURE, DEFAULT_TEMPERATURE
+                    ),
+                )
+            ] = vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0))
         elif provider == "LocalAI":
-            schema[vol.Optional(CONF_LOCALAI_HTTPS, default=self._get_option(CONF_LOCALAI_HTTPS, False))] = bool
-            schema[vol.Optional(CONF_LOCALAI_MODEL, default=self._get_option(CONF_LOCALAI_MODEL, DEFAULT_MODELS["LocalAI"]))] = str
-            schema[vol.Optional(CONF_LOCALAI_TEMPERATURE, default=self._get_option(CONF_LOCALAI_TEMPERATURE, DEFAULT_TEMPERATURE))] = vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0))
-            schema[vol.Optional(CONF_LOCALAI_IP_ADDRESS, default=self._get_option(CONF_LOCALAI_IP_ADDRESS, "localhost"))] = str
-            schema[vol.Optional(CONF_LOCALAI_PORT, default=self._get_option(CONF_LOCALAI_PORT, 8080))] = int
+            schema[
+                vol.Optional(
+                    CONF_LOCALAI_HTTPS,
+                    default=self._get_option(CONF_LOCALAI_HTTPS, False),
+                )
+            ] = bool
+            schema[
+                vol.Optional(
+                    CONF_LOCALAI_MODEL,
+                    default=self._get_option(
+                        CONF_LOCALAI_MODEL, DEFAULT_MODELS["LocalAI"]
+                    ),
+                )
+            ] = str
+            schema[
+                vol.Optional(
+                    CONF_LOCALAI_TEMPERATURE,
+                    default=self._get_option(
+                        CONF_LOCALAI_TEMPERATURE, DEFAULT_TEMPERATURE
+                    ),
+                )
+            ] = vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0))
+            schema[
+                vol.Optional(
+                    CONF_LOCALAI_IP_ADDRESS,
+                    default=self._get_option(CONF_LOCALAI_IP_ADDRESS, "localhost"),
+                )
+            ] = str
+            schema[
+                vol.Optional(
+                    CONF_LOCALAI_PORT, default=self._get_option(CONF_LOCALAI_PORT, 8080)
+                )
+            ] = int
         elif provider == "Ollama":
-            schema[vol.Optional(CONF_OLLAMA_IP_ADDRESS, default=self._get_option(CONF_OLLAMA_IP_ADDRESS, "localhost"))] = str
-            schema[vol.Optional(CONF_OLLAMA_PORT, default=self._get_option(CONF_OLLAMA_PORT, 11434))] = int
-            schema[vol.Optional(CONF_OLLAMA_HTTPS, default=self._get_option(CONF_OLLAMA_HTTPS, False))] = bool
-            schema[vol.Optional(CONF_OLLAMA_MODEL, default=self._get_option(CONF_OLLAMA_MODEL, DEFAULT_MODELS["Ollama"]))] = str
-            schema[vol.Optional(CONF_OLLAMA_TEMPERATURE, default=self._get_option(CONF_OLLAMA_TEMPERATURE, DEFAULT_TEMPERATURE))] = vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0))
-            schema[vol.Optional(CONF_OLLAMA_DISABLE_THINK, default=self._get_option(CONF_OLLAMA_DISABLE_THINK, False))] = bool    
+            schema[
+                vol.Optional(
+                    CONF_OLLAMA_IP_ADDRESS,
+                    default=self._get_option(CONF_OLLAMA_IP_ADDRESS, "localhost"),
+                )
+            ] = str
+            schema[
+                vol.Optional(
+                    CONF_OLLAMA_PORT, default=self._get_option(CONF_OLLAMA_PORT, 11434)
+                )
+            ] = int
+            schema[
+                vol.Optional(
+                    CONF_OLLAMA_HTTPS,
+                    default=self._get_option(CONF_OLLAMA_HTTPS, False),
+                )
+            ] = bool
+            schema[
+                vol.Optional(
+                    CONF_OLLAMA_MODEL,
+                    default=self._get_option(
+                        CONF_OLLAMA_MODEL, DEFAULT_MODELS["Ollama"]
+                    ),
+                )
+            ] = str
+            schema[
+                vol.Optional(
+                    CONF_OLLAMA_TEMPERATURE,
+                    default=self._get_option(
+                        CONF_OLLAMA_TEMPERATURE, DEFAULT_TEMPERATURE
+                    ),
+                )
+            ] = vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0))
+            schema[
+                vol.Optional(
+                    CONF_OLLAMA_DISABLE_THINK,
+                    default=self._get_option(CONF_OLLAMA_DISABLE_THINK, False),
+                )
+            ] = bool
         elif provider == "Custom OpenAI":
-            schema[vol.Optional(CONF_CUSTOM_OPENAI_ENDPOINT, default=self._get_option(CONF_CUSTOM_OPENAI_ENDPOINT))] = str
-            schema[vol.Optional(CONF_CUSTOM_OPENAI_API_KEY, default=self._get_option(CONF_CUSTOM_OPENAI_API_KEY))] = TextSelector(TextSelectorConfig(type="password"))
-            schema[vol.Optional(CONF_CUSTOM_OPENAI_MODEL, default=self._get_option(CONF_CUSTOM_OPENAI_MODEL, DEFAULT_MODELS["Custom OpenAI"]))] = str
-            schema[vol.Optional(CONF_CUSTOM_OPENAI_TEMPERATURE, default=self._get_option(CONF_CUSTOM_OPENAI_TEMPERATURE, DEFAULT_TEMPERATURE))] = vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0))
+            schema[
+                vol.Optional(
+                    CONF_CUSTOM_OPENAI_ENDPOINT,
+                    default=self._get_option(CONF_CUSTOM_OPENAI_ENDPOINT),
+                )
+            ] = str
+            schema[
+                vol.Optional(
+                    CONF_CUSTOM_OPENAI_API_KEY,
+                    default=self._get_option(CONF_CUSTOM_OPENAI_API_KEY),
+                )
+            ] = TextSelector(TextSelectorConfig(type="password"))
+            schema[
+                vol.Optional(
+                    CONF_CUSTOM_OPENAI_MODEL,
+                    default=self._get_option(
+                        CONF_CUSTOM_OPENAI_MODEL, DEFAULT_MODELS["Custom OpenAI"]
+                    ),
+                )
+            ] = str
+            schema[
+                vol.Optional(
+                    CONF_CUSTOM_OPENAI_TEMPERATURE,
+                    default=self._get_option(
+                        CONF_CUSTOM_OPENAI_TEMPERATURE, DEFAULT_TEMPERATURE
+                    ),
+                )
+            ] = vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0))
         elif provider == "Mistral AI":
-            schema[vol.Optional(CONF_MISTRAL_API_KEY, default=self._get_option(CONF_MISTRAL_API_KEY))] = TextSelector(TextSelectorConfig(type="password"))
-            schema[vol.Optional(CONF_MISTRAL_MODEL, default=self._get_option(CONF_MISTRAL_MODEL, DEFAULT_MODELS["Mistral AI"]))] = str
-            schema[vol.Optional(CONF_MISTRAL_TEMPERATURE, default=self._get_option(CONF_MISTRAL_TEMPERATURE, DEFAULT_TEMPERATURE))] = vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0))
+            schema[
+                vol.Optional(
+                    CONF_MISTRAL_API_KEY, default=self._get_option(CONF_MISTRAL_API_KEY)
+                )
+            ] = TextSelector(TextSelectorConfig(type="password"))
+            schema[
+                vol.Optional(
+                    CONF_MISTRAL_MODEL,
+                    default=self._get_option(
+                        CONF_MISTRAL_MODEL, DEFAULT_MODELS["Mistral AI"]
+                    ),
+                )
+            ] = str
+            schema[
+                vol.Optional(
+                    CONF_MISTRAL_TEMPERATURE,
+                    default=self._get_option(
+                        CONF_MISTRAL_TEMPERATURE, DEFAULT_TEMPERATURE
+                    ),
+                )
+            ] = vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0))
         elif provider == "Perplexity AI":
-            schema[vol.Optional(CONF_PERPLEXITY_API_KEY, default=self._get_option(CONF_PERPLEXITY_API_KEY))] = TextSelector(TextSelectorConfig(type="password"))
-            schema[vol.Optional(CONF_PERPLEXITY_MODEL, default=self._get_option(CONF_PERPLEXITY_MODEL, DEFAULT_MODELS["Perplexity AI"]))] = str
-            schema[vol.Optional(CONF_PERPLEXITY_TEMPERATURE, default=self._get_option(CONF_PERPLEXITY_TEMPERATURE, DEFAULT_TEMPERATURE))] = vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0))
+            schema[
+                vol.Optional(
+                    CONF_PERPLEXITY_API_KEY,
+                    default=self._get_option(CONF_PERPLEXITY_API_KEY),
+                )
+            ] = TextSelector(TextSelectorConfig(type="password"))
+            schema[
+                vol.Optional(
+                    CONF_PERPLEXITY_MODEL,
+                    default=self._get_option(
+                        CONF_PERPLEXITY_MODEL, DEFAULT_MODELS["Perplexity AI"]
+                    ),
+                )
+            ] = str
+            schema[
+                vol.Optional(
+                    CONF_PERPLEXITY_TEMPERATURE,
+                    default=self._get_option(
+                        CONF_PERPLEXITY_TEMPERATURE, DEFAULT_TEMPERATURE
+                    ),
+                )
+            ] = vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0))
         elif provider == "OpenRouter":
-            schema[vol.Optional(CONF_OPENROUTER_API_KEY, default=self._get_option(CONF_OPENROUTER_API_KEY))] = TextSelector(TextSelectorConfig(type="password"))
-            schema[vol.Optional(CONF_OPENROUTER_MODEL, default=self._get_option(CONF_OPENROUTER_MODEL, DEFAULT_MODELS["OpenRouter"]))] = str
-            schema[vol.Optional(CONF_OPENROUTER_REASONING_MAX_TOKENS, default=self._get_option(CONF_OPENROUTER_REASONING_MAX_TOKENS, 0))] = vol.All(vol.Coerce(int), vol.Range(min=0))
-            schema[vol.Optional(CONF_OPENROUTER_TEMPERATURE, default=self._get_option(CONF_OPENROUTER_TEMPERATURE, DEFAULT_TEMPERATURE))] = vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0))
+            schema[
+                vol.Optional(
+                    CONF_OPENROUTER_API_KEY,
+                    default=self._get_option(CONF_OPENROUTER_API_KEY),
+                )
+            ] = TextSelector(TextSelectorConfig(type="password"))
+            schema[
+                vol.Optional(
+                    CONF_OPENROUTER_MODEL,
+                    default=self._get_option(
+                        CONF_OPENROUTER_MODEL, DEFAULT_MODELS["OpenRouter"]
+                    ),
+                )
+            ] = str
+            schema[
+                vol.Optional(
+                    CONF_OPENROUTER_REASONING_MAX_TOKENS,
+                    default=self._get_option(CONF_OPENROUTER_REASONING_MAX_TOKENS, 0),
+                )
+            ] = vol.All(vol.Coerce(int), vol.Range(min=0))
+            schema[
+                vol.Optional(
+                    CONF_OPENROUTER_TEMPERATURE,
+                    default=self._get_option(
+                        CONF_OPENROUTER_TEMPERATURE, DEFAULT_TEMPERATURE
+                    ),
+                )
+            ] = vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0))
         elif provider == "OpenAI Azure":
-            schema[vol.Optional(CONF_OPENAI_AZURE_API_KEY, default=self._get_option(CONF_OPENAI_AZURE_API_KEY))] = TextSelector(TextSelectorConfig(type="password"))
-            schema[vol.Optional(CONF_OPENAI_AZURE_ENDPOINT, default=self._get_option(CONF_OPENAI_AZURE_ENDPOINT))] = str
-            schema[vol.Optional(CONF_OPENAI_AZURE_DEPLOYMENT_ID, default=self._get_option(CONF_OPENAI_AZURE_DEPLOYMENT_ID, DEFAULT_MODELS["OpenAI Azure"]))] = str
-            schema[vol.Optional(CONF_OPENAI_AZURE_API_VERSION, default=self._get_option(CONF_OPENAI_AZURE_API_VERSION, "2025-01-01-preview"))] = str
-            schema[vol.Optional(CONF_OPENAI_AZURE_TEMPERATURE, default=self._get_option(CONF_OPENAI_AZURE_TEMPERATURE, DEFAULT_TEMPERATURE))] = vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0))
+            schema[
+                vol.Optional(
+                    CONF_OPENAI_AZURE_API_KEY,
+                    default=self._get_option(CONF_OPENAI_AZURE_API_KEY),
+                )
+            ] = TextSelector(TextSelectorConfig(type="password"))
+            schema[
+                vol.Optional(
+                    CONF_OPENAI_AZURE_ENDPOINT,
+                    default=self._get_option(CONF_OPENAI_AZURE_ENDPOINT),
+                )
+            ] = str
+            schema[
+                vol.Optional(
+                    CONF_OPENAI_AZURE_DEPLOYMENT_ID,
+                    default=self._get_option(
+                        CONF_OPENAI_AZURE_DEPLOYMENT_ID, DEFAULT_MODELS["OpenAI Azure"]
+                    ),
+                )
+            ] = str
+            schema[
+                vol.Optional(
+                    CONF_OPENAI_AZURE_API_VERSION,
+                    default=self._get_option(
+                        CONF_OPENAI_AZURE_API_VERSION, "2025-01-01-preview"
+                    ),
+                )
+            ] = str
+            schema[
+                vol.Optional(
+                    CONF_OPENAI_AZURE_TEMPERATURE,
+                    default=self._get_option(
+                        CONF_OPENAI_AZURE_TEMPERATURE, DEFAULT_TEMPERATURE
+                    ),
+                )
+            ] = vol.All(vol.Coerce(float), vol.Range(min=0.0, max=2.0))
 
         return self.async_show_form(step_id="init", data_schema=vol.Schema(schema))

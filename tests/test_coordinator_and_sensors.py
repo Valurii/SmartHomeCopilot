@@ -1,9 +1,9 @@
 import sys
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
-import asyncio
-from datetime import datetime, timedelta
+from datetime import datetime
 from unittest.mock import patch
 from zoneinfo import ZoneInfo
 
@@ -24,7 +24,6 @@ from custom_components.SmartHomeCopilot.const import (
     CONF_MAX_TOKENS,
     CONF_OPENAI_MODEL,
     PROVIDER_STATUS_CONNECTED,
-    PROVIDER_STATUS_INITIALIZING,
     PROVIDER_STATUS_ERROR,
     SENSOR_KEY_SUGGESTIONS,
     SENSOR_KEY_STATUS,
@@ -49,7 +48,11 @@ from custom_components.SmartHomeCopilot.sensor import (
 async def test_coordinator_budgets():
     repo_root = Path(__file__).resolve().parents[1]
     kwargs = {
-        ("storage_dir" if "storage_dir" in signature(async_test_home_assistant).parameters else "config_dir"): str(repo_root)
+        (
+            "storage_dir"
+            if "storage_dir" in signature(async_test_home_assistant).parameters
+            else "config_dir"
+        ): str(repo_root)
     }
     with patch("homeassistant.util.dt.get_time_zone", return_value=ZoneInfo("UTC")):
         async with async_test_home_assistant(**kwargs) as hass:
@@ -57,18 +60,18 @@ async def test_coordinator_budgets():
                 hass.config.set_time_zone("UTC")
             hass.data.pop(LOADER_CUSTOM, None)
             entry = MockConfigEntry(
-            domain=DOMAIN,
-            title="Test",
-            data={
-                CONF_PROVIDER: "OpenAI",
-                CONF_MAX_TOKENS: 50,
-            },
-            options={
-                CONF_MAX_INPUT_TOKENS: 100,
-                CONF_MAX_OUTPUT_TOKENS: 200,
-            },
-            version=CONFIG_VERSION,
-        )
+                domain=DOMAIN,
+                title="Test",
+                data={
+                    CONF_PROVIDER: "OpenAI",
+                    CONF_MAX_TOKENS: 50,
+                },
+                options={
+                    CONF_MAX_INPUT_TOKENS: 100,
+                    CONF_MAX_OUTPUT_TOKENS: 200,
+                },
+                version=CONFIG_VERSION,
+            )
         entry.add_to_hass(hass)
         coordinator = AIAutomationCoordinator(hass, entry)
         assert coordinator._budgets() == (100, 200)
@@ -93,7 +96,11 @@ async def test_coordinator_budgets():
 async def test_sensor_updates():
     repo_root = Path(__file__).resolve().parents[1]
     kwargs = {
-        ("storage_dir" if "storage_dir" in signature(async_test_home_assistant).parameters else "config_dir"): str(repo_root)
+        (
+            "storage_dir"
+            if "storage_dir" in signature(async_test_home_assistant).parameters
+            else "config_dir"
+        ): str(repo_root)
     }
     with patch("homeassistant.util.dt.get_time_zone", return_value=ZoneInfo("UTC")):
         async with async_test_home_assistant(**kwargs) as hass:
@@ -101,20 +108,24 @@ async def test_sensor_updates():
                 hass.config.set_time_zone("UTC")
             hass.data.pop(LOADER_CUSTOM, None)
             entry = MockConfigEntry(
-            domain=DOMAIN,
-            title="Test",
-            data={CONF_PROVIDER: "OpenAI", CONF_OPENAI_MODEL: "model-a"},
-            options={},
-            version=CONFIG_VERSION,
-        )
+                domain=DOMAIN,
+                title="Test",
+                data={CONF_PROVIDER: "OpenAI", CONF_OPENAI_MODEL: "model-a"},
+                options={},
+                version=CONFIG_VERSION,
+            )
         entry.add_to_hass(hass)
         coordinator = AIAutomationCoordinator(hass, entry)
         # Initialize sensors
         desc_map = {d.key: d for d in SENSOR_DESCRIPTIONS}
         sugg = AISuggestionsSensor(coordinator, entry, desc_map[SENSOR_KEY_SUGGESTIONS])
         status = AIProviderStatusSensor(coordinator, entry, desc_map[SENSOR_KEY_STATUS])
-        in_tok = MaxInputTokensSensor(coordinator, entry, desc_map[SENSOR_KEY_INPUT_TOKENS])
-        out_tok = MaxOutputTokensSensor(coordinator, entry, desc_map[SENSOR_KEY_OUTPUT_TOKENS])
+        in_tok = MaxInputTokensSensor(
+            coordinator, entry, desc_map[SENSOR_KEY_INPUT_TOKENS]
+        )
+        out_tok = MaxOutputTokensSensor(
+            coordinator, entry, desc_map[SENSOR_KEY_OUTPUT_TOKENS]
+        )
         model = AIModelSensor(coordinator, entry, desc_map[SENSOR_KEY_MODEL])
         err = AILastErrorSensor(coordinator, entry, desc_map[SENSOR_KEY_LAST_ERROR])
 
@@ -159,4 +170,3 @@ async def test_sensor_updates():
         assert err.native_value == "boom"
         assert status.native_value == PROVIDER_STATUS_ERROR
         await hass.async_stop(force=True)
-
