@@ -1,0 +1,7 @@
+{
+  "name": "SmartHome Copilot",
+  "content_in_root": false,
+  "render_readme": true,
+  "homeassistant": "2024.1.0",
+  "hacs": "1.26.0"
+}
