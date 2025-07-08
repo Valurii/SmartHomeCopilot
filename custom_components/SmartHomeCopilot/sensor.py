@@ -1,4 +1,4 @@
-# custom_components/ai_automation_suggester/sensor.py
+# custom_components/SmartHomeCopilot/sensor.py
 """Sensor platform for AI Automation Suggester."""
 
 from __future__ import annotations
