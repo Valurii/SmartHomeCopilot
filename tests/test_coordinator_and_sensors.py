@@ -15,7 +15,7 @@ from pytest_homeassistant_custom_component.common import (
     async_test_home_assistant,
 )
 
-from custom_components.ai_automation_suggester.const import (
+from custom_components.SmartHomeCopilot.const import (
     DOMAIN,
     CONF_PROVIDER,
     CONFIG_VERSION,
@@ -33,8 +33,8 @@ from custom_components.ai_automation_suggester.const import (
     SENSOR_KEY_MODEL,
     SENSOR_KEY_LAST_ERROR,
 )
-from custom_components.ai_automation_suggester.coordinator import AIAutomationCoordinator
-from custom_components.ai_automation_suggester.sensor import (
+from custom_components.SmartHomeCopilot.coordinator import AIAutomationCoordinator
+from custom_components.SmartHomeCopilot.sensor import (
     SENSOR_DESCRIPTIONS,
     AISuggestionsSensor,
     AIProviderStatusSensor,
