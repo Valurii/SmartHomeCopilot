@@ -44,5 +44,4 @@ condition:
 
 action:
   - service: ai_automation_suggester.generate_suggestions
-    target: {}
-    data: {}
+    target: {}    data: {}
