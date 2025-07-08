@@ -1,7 +1,11 @@
 import sys
 from pathlib import Path
 
-sys.path.append(str(Path(__file__).resolve().parents[1]))
+# Add the custom_components directory to the path so we can import the
+# integration directly as ``SmartHomeCopilot`` during tests.
+sys.path.append(
+    str(Path(__file__).resolve().parents[1] / "custom_components")
+)
 
 import pytest
 from unittest.mock import patch
@@ -14,7 +18,7 @@ from pytest_homeassistant_custom_component.common import (
     async_test_home_assistant,
 )
 
-from custom_components.SmartHomeCopilot.const import (
+from SmartHomeCopilot.const import (
     DOMAIN,
     CONF_PROVIDER,
     CONFIG_VERSION,

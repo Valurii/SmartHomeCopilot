@@ -400,7 +400,8 @@ tests:
 pip install homeassistant pytest-homeassistant-custom-component
 ```
 
-You can use the provided helper script to set everything up:
+You can use the provided helper script to set everything up. Ensure you are
+running **Python 3.11**, then run:
 
 ```bash
 bash scripts/setup_tests.sh
