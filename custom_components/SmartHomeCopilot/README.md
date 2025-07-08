@@ -12,8 +12,8 @@ An AI-powered Home Assistant custom integration that suggests automations based 
 
 ## Installation
 
-1. Copy the `ai_suggester` folder to your `custom_components` directory.
-2. Copy the `ai-suggester-card.js` file to `www/ai_suggester/` directory.
+1. Copy the `SmarHomeCopilot` folder to your `custom_components` directory.
+2. Copy the `ai-suggester-card.js` file to `www/SmarHomeCopilot/` directory.
 3. Restart Home Assistant.
 4. In Home Assistant, navigate to **Configuration** > **Integrations**.
 5. Click the **Add Integration** button and search for **AI Suggester**.
@@ -30,14 +30,17 @@ An AI-powered Home Assistant custom integration that suggests automations based 
 - When new suggestions are available, a persistent notification will appear.
 - Add the **AI Suggester Card** to your Lovelace dashboard to view suggestions.
 
+
 ## Adding the Lovelace Card
 
 1. In Home Assistant, go to **Overview** > **Edit Dashboard**.
 2. Click **Add Card** and choose **Manual**.
 3. Add the following configuration:
+
+```yaml
+type: moduleurl: /local/SmarHomeCopilot/ai-suggester-card.js
+```
+
 4. To Add another card:
    type: 'custom:ai-suggester-card'
 
-```yaml
-type: module
-url: /local/ai_suggester/ai-suggester-card.js
