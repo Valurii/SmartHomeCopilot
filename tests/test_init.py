@@ -3,9 +3,7 @@ from pathlib import Path
 
 # Add the custom_components directory to the path so we can import the
 # integration directly as ``SmartHomeCopilot`` during tests.
-sys.path.append(
-    str(Path(__file__).resolve().parents[1] / "custom_components")
-)
+sys.path.append(str(Path(__file__).resolve().parents[1] / "custom_components"))
 
 import pytest
 from unittest.mock import patch
