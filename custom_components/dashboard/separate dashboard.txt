@@ -54,7 +54,11 @@ views:
               state_attr('sensor.ai_automation_suggestions_google',
               'yaml_block') %}
 
-              {% if code %} ```yaml {{ code }} ``` {% else %} _No YAML block
-              found. The most recent AI reply did not contain raw code._ {%
-              endif %}
+              {% if code %}
+              ```yaml
+              {{ code }}
+              ```
+              {% else %}
+              _No YAML block found. The most recent AI reply did not contain raw code._
+              {% endif %}
 
