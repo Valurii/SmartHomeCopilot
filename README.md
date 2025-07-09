@@ -1,14 +1,14 @@
 <p align="center">
-  <a href="https://www.buymeacoffee.com/fjoelnir" target="_blank">
+  <a href="https://coff.ee/fjoelnir" target="_blank">
     <img src="https://img.shields.io/badge/Buy&nbsp;me&nbsp;a&nbsp;coffee-Support&nbsp;Dev-yellow?style=for-the-badge&logo=buy-me-a-coffee" alt="Buy Me A Coffee">
   </a>
 </p>
 
 # AI Automation Suggester
 
-[![Validate with hassfest](https://img.shields.io/github/actions/workflow/status/fjoelnr/SmarHomeCopilot/hassfest.yaml?style=for-the-badge)](https://github.com/fjoelnr/SmartHomeCopilot)
-[![HACS Validation](https://img.shields.io/github/actions/workflow/status/fjoelnr/SmarHomeCopilot/validate.yaml?style=for-the-badge)](https://github.com/fjoelnr/SmartHomeCopilot)
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/fjoelnr/SmarHomeCopilot?style=for-the-badge)](https://github.com/fjoelnr/SmartHomeCopilot)
+[![Validate with hassfest](https://img.shields.io/github/actions/workflow/status/fjoelnr/SmartHomeCopilot/hassfest.yaml?style=for-the-badge)](https://github.com/fjoelnr/SmartHomeCopilot)
+[![HACS Validation](https://img.shields.io/github/actions/workflow/status/fjoelnr/SmartHomeCopilot/validate.yaml?style=for-the-badge)](https://github.com/fjoelnr/SmartHomeCopilot)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/fjoelnr/SmartHomeCopilot?style=for-the-badge)](https://github.com/fjoelnr/SmartHomeCopilot)
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://github.com/fjoelnr/SmartHomeCopilot)
 
 Inspired by the original project from ITSpecialist111.
@@ -107,7 +107,7 @@ Leveraging the AI Automation Suggester provides several key benefits:
 * **Randomized Entity Selection:** Prevent repetitive suggestions and discover new opportunities.
 * **Context-Rich Insights:** Incorporates device and area information for smarter, more relevant ideas.
 * **Persistent Notifications:** Receive suggestions directly in your Home Assistant interface.
-* **Service Call Integration:** Manually trigger suggestions via the `SmarHomeCopilot.generate_suggestions` service with full parameter control.
+* **Service Call Integration:** Manually trigger suggestions via the `smart_home_copilot.generate_suggestions` service with full parameter control.
 * **Diagnostics Sensors:** Monitor suggestion status and provider connection health.
 * **Example Automations:** Includes built-in examples for new entity detection and weekly reviews.
 * **Dashboard-Friendly Output:** Sensor attributes provide description and YAML blocks ready for Lovelace cards.
@@ -197,7 +197,7 @@ Find and enable these examples in Settings → Automations.
 You can trigger the suggestion generation manually using the service call:
 
 1.  Go to Developer Tools → **Services**.
-2.  Select the service `SmarHomeCopilot.generate_suggestions`.
+2.  Select the service `smart_home_copilot.generate_suggestions`.
 3.  Call the service. You can pass parameters to customize the request:
     * `all_entities` (boolean, default: `false`): Set to `true` to consider all eligible entities, `false` to only consider entities added since the last successful run.
     * `domains` (list of strings, optional): Limit the analysis to entities within specific domains (e.g., `['light', 'sensor']`).
@@ -345,9 +345,9 @@ Monitor these sensors to ensure the integration is functioning correctly.
 | Symptom                                 | Check / Action                                                                                                                               |
 |-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
 | **No suggestions available** | - Verify API key is correct.<br>- Check the `AI Provider Status` sensor for errors.<br>- Check the Home Assistant logs for errors related to the integration.<br>- Try triggering the service manually with a small `entity_limit` and no domain filters.<br>- Ensure you have enough entities/devices for meaningful suggestions. |
-| **AI Provider Status shows `error`** | - Inspect the Home Assistant log (`home-assistant.log`) for detailed error messages (look for `SmarHomeCopilot` and `processing error`).<br>- Check your network connection to the provider's server (if cloud-based) or your local server.<br>- Confirm your API key is active and has permissions.<br>- Ensure your local AI server is running and accessible. |
+| **AI Provider Status shows `error`** | - Inspect the Home Assistant log (`home-assistant.log`) for detailed error messages (look for `SmartHomeCopilot` and `processing error`).<br>- Check your network connection to the provider's server (if cloud-based) or your local server.<br>- Confirm your API key is active and has permissions.<br>- Ensure your local AI server is running and accessible. |
 | **Suggestion prompt is too long** | - Reduce the `entity_limit` parameter when triggering the service or configuring the automation.<br>- Use the `domains` filter to narrow the scope of entities analyzed.<br>- Shorten or simplify your `custom_prompt` if you are using one. |
-| **Unintended startup suggestions** | - Review your Home Assistant automations and scripts to ensure none are configured to call `SmarHomeCopilot.generate_suggestions` on startup or via events you didn't intend. |
+| **Unintended startup suggestions** | - Review your Home Assistant automations and scripts to ensure none are configured to call `smart_home_copilot.generate_suggestions` on startup or via events you didn't intend. |
 | **Suggestions are repetitive** | - Ensure `all_entities` is used (e.g., in a weekly automation) and consider enabling randomized entity selection.<br>- Try different `custom_prompt` values to steer the AI in a new direction.<br>- Increase the `entity_limit` to give the AI more data points (if prompt length allows). |
 | **Image links are broken in HACS/GitHub** | This has been addressed in this README version. Ensure the README file in your repository uses the corrected URLs provided. Clear your browser cache or wait for GitHub/HACS to refresh. |
 
@@ -420,7 +420,7 @@ This is a custom component developed independently. It is not affiliated with, e
 
 If you find this integration helpful and it saves you time and effort in automating your home, please consider supporting its development. Your support helps with maintenance, adding new features, and covering any potential costs associated with development and testing.
 
-[<img src="https://img.shields.io/badge/Buy&nbsp;me&nbsp;a&nbsp;coffee-Support&nbsp;Dev-yellow?style=for-the-badge&logo=buy-me-a-coffee" alt="Buy Me A Coffee">](https://www.buymeacoffee.com/fjoelnir)
+[<img src="https://img.shields.io/badge/Buy&nbsp;me&nbsp;a&nbsp;coffee-Support&nbsp;Dev-yellow?style=for-the-badge&logo=buy-me-a-coffee" alt="Buy Me A Coffee">](https://coff.ee/fjoelnir)
 
 ---
 
