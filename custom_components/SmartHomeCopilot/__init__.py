@@ -144,7 +144,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             coordinator.scan_all = False
 
         entry.async_on_unload(
-            hass.bus.async_listen("ai_automation_suggester_update", handle_custom_event)
+            hass.bus.async_listen("smart_home_copilot_update", handle_custom_event)
         )
 
         return True

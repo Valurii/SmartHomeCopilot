@@ -27,7 +27,7 @@ condition:
 
 action:
   # Generate suggestions using the configured provider(s), scanning all entities
-  - service: ai_automation_suggester.generate_suggestions
+  - service: smart_home_copilot.generate_suggestions
     data:
       all_entities: true
 

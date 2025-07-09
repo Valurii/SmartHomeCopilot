@@ -1,12 +1,12 @@
-"""Constants for the AI Automation Suggester integration."""
+"""Constants for the SmartHomeCopilot integration."""
 
 # ─────────────────────────────────────────────────────────────
 # Core
 # ─────────────────────────────────────────────────────────────
-DOMAIN = "ai_automation_suggester"
+DOMAIN = "smart_home_copilot"
 PLATFORMS = ["sensor"]
 CONFIG_VERSION = 2  # config‑entry version (used by async_migrate_entry)
-INTEGRATION_NAME = "AI Automation Suggester"
+INTEGRATION_NAME = "SmartHomeCopilot"
 
 # ─────────────────────────────────────────────────────────────
 # Token budgeting

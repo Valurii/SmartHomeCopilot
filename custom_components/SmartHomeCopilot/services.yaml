@@ -8,7 +8,7 @@ generate_suggestions:
       required: false
       selector:
         config_entry:
-          integration: ai_automation_suggester
+          integration: smart_home_copilot
     custom_prompt:
       name: Custom Prompt
       description: Optional custom prompt to override or enhance the default system prompt.

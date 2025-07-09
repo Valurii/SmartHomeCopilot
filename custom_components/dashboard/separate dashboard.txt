@@ -21,7 +21,7 @@ views:
                   {{ 'Suggestions_Available' if states(entity) == 'Suggestions
                   Available' else 'All_Good' }}
               - type: entity
-                entity: update.ai_automation_suggester_update
+                entity: update.smart_home_copilot_update
                 name: Fjoelnir AI Suggester
                 icon_color: '{{ ''red'' if is_state(entity,''on'') else ''green'' }}'
               - type: template
