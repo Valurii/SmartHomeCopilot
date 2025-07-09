@@ -35,8 +35,12 @@ An AI-powered Home Assistant custom integration that suggests automations based 
 1. In Home Assistant, go to **Overview** > **Edit Dashboard**.
 2. Click **Add Card** and choose **Manual**.
 3. Add the following configuration:
-4. To add another card:
-   type: 'custom:SmartHome-Copilot-card'
+
+```yaml
+type: 'custom:SmartHome-Copilot-card'
+```
+
+4. Make sure you've added the following resource:
 
 ```yaml
 type: module

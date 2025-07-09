@@ -12,8 +12,8 @@ An AI-powered Home Assistant custom integration that suggests automations based 
 
 ## Installation
 
-1. Copy the `SmarHomeCopilot` folder to your `custom_components` directory.
-2. Copy the `ai-suggester-card.js` file to `www/SmarHomeCopilot/` directory.
+1. Copy the `SmartHomeCopilot` folder to your `custom_components` directory.
+2. Copy the `SmartHome-Copilot-card.js` file to `www/SmartHome_Copilot/` directory.
 3. Restart Home Assistant.
 4. In Home Assistant, navigate to **Configuration** > **Integrations**.
 5. Click the **Add Integration** button and search for **AI Suggester**.
@@ -38,9 +38,10 @@ An AI-powered Home Assistant custom integration that suggests automations based 
 3. Add the following configuration:
 
 ```yaml
-type: moduleurl: /local/SmarHomeCopilot/ai-suggester-card.js
+type: module
+url: /local/SmartHome_Copilot/SmartHome-Copilot-card.js
 ```
 
 4. To Add another card:
-   type: 'custom:ai-suggester-card'
+   type: 'custom:SmartHome-Copilot-card'
 
