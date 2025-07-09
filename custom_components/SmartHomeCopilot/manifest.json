@@ -1,6 +1,6 @@
 {
-  "domain": "ai_automation_suggester",
-  "name": "AI Automation Suggester",
+  "domain": "smart_home_copilot",
+  "name": "SmartHomeCopilot",
   "codeowners": ["@fjoelnr"],
   "config_flow": true,
   "dependencies": [],

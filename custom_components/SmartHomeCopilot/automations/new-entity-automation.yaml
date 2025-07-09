@@ -43,5 +43,5 @@ condition:
       {% endif %}
 
 action:
-  - service: ai_automation_suggester.generate_suggestions
+  - service: smart_home_copilot.generate_suggestions
     target: {}    data: {}
