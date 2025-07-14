@@ -124,5 +124,5 @@ export class SmartHomeCopilotCard extends LitElement {
 }
 // Provide a fallback registration if the module is loaded directly
 if (customElements.get('SmartHome-Copilot-card') === undefined) {
-  customElements.define('SmartHome-Copilot-card', AiAutomationSuggesterCard);
+  customElements.define('SmartHome-Copilot-card', SmartHomeCopilotCard);
 }
