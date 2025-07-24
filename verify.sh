@@ -2,12 +2,14 @@
 
 # Deploys a test stack and triggers the nightly automation.
 # Requires Docker and a valid $HASS_TOKEN for Home Assistant API access.
+# Optional environment variable:
+#   HASS_API - Base URL for the Home Assistant API (default: http://localhost:8123/api/)
 
 set -euo pipefail
 
 STACK_NAME="smartcopilot_test"
 STACK_FILE="docker-stack-smartcopilot.yml"
-HASS_API="http://localhost:8123/api/"
+HASS_API="${HASS_API:-http://localhost:8123/api/}"
 
 # Deploy the stack
 if ! docker stack deploy -c "$STACK_FILE" "$STACK_NAME"; then
