@@ -1,9 +1,5 @@
 {
-    "python.pythonPath": "/usr/bin/python3",
-    "debugpy.defaultPathMappings": [
-        {
-            "localRoot": "${workspaceFolder}",
-            "remoteRoot": "/config/custom_components/SmartHomeCopilot"
-        }
-    ]
+    "files.watcherExclude": {
+        "**/logs/**": false
+    }
 }

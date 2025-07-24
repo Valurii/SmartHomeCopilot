@@ -1,36 +1,14 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  # Home Assistant service
-  homeassistant:
-    image: ghcr.io/home-assistant/home-assistant:stable
-    container_name: homeassistant
-    volumes:
-      - ha_config:/config  # Persist HA configuration
-      - /etc/localtime:/etc/localtime:ro
-    environment:
-      - TZ=UTC
-    networks:
-      - ha-net
-    restart: unless-stopped
-
-  # SmartHomeCopilot service
   smartcopilot:
-    image: ghcr.io/fjoelnr/smart-home-copilot:latest
-    container_name: smartcopilot
-    depends_on:
-      - homeassistant
-    environment:
-      - HASS_TOKEN=${HASS_TOKEN}       # Home Assistant long‑lived token
-      - OLLAMA_URL=${OLLAMA_URL}       # URL of your Ollama server
-      - OPENAI_API_KEY=${OPENAI_API_KEY}  # Optional OpenAI key
-    networks:
-      - ha-net
-    restart: unless-stopped
-
-networks:
-  ha-net: # Shared network for the stack
-    driver: bridge
+    image: smartcopilot:latest
+    volumes:
+      - ha_config:/config
+      - ha_config/logs:/config/logs
+    deploy:
+      restart_policy:
+        condition: on-failure
 
 volumes:
-  ha_config: # Persisted Home Assistant data
+  ha_config:
