@@ -1,18 +1,25 @@
-# Example package with demo entities and an automation
-# Adjust entity names or add more devices if needed.
+# Example package with demo entities and an automation triggered by the demo
+# binary sensor. Adjust names or add more entities as needed.
+
 light:
   - platform: demo
-    name: Demo Lamp  # change name to customize entity_id
+    name: Demo Lamp  # customize to change entity_id
+
+binary_sensor:
+  - platform: demo
+    name: Demo Motion  # example binary sensor
 
 sensor:
   - platform: demo
     name: Demo Temperature
 
 automation:
-  - alias: "Demo: turn on lamp at sunset"
+  # Turn the lamp on whenever the binary sensor reports "on"
+  - alias: "Demo: turn on lamp when motion detected"
     trigger:
-      - platform: sun
-        event: sunset
+      - platform: state
+        entity_id: binary_sensor.demo_motion
+        to: "on"
     action:
       - service: light.turn_on
         target:
