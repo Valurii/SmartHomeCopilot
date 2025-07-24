@@ -22,7 +22,7 @@ services:
 
   # Container running the SmartCopilot integration
   smartcopilot:
-    image: smartcopilot:latest
+    image: ghcr.io/valurii/smarthomecopilot:latest
     volumes:
       - ha_config:/config            # share config with Home Assistant
       - ha_config/logs:/config/logs  # same log directory
