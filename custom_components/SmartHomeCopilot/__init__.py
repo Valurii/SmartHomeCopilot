@@ -1,4 +1,12 @@
-"""The AI Automation Suggester integration."""
+"""The AI Automation Suggester integration.
+
+To enable remote debugging with VS Code, add the following near startup::
+
+    import debugpy
+    debugpy.listen(("0.0.0.0", 5678))
+
+Then attach using the "Python: Remote Attach" launch configuration.
+"""
 
 import logging
 from homeassistant.config_entries import ConfigEntry

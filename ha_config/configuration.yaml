@@ -1,0 +1,8 @@
+# Sample Home Assistant configuration
+# Update the include path if you move these files or set $HACONFIG_DIR
+homeassistant:
+  packages: !include demo_devices.yaml
+
+smart_home_copilot:
+  # Provider credentials can be stored in secrets.yaml or via environment variables
+  # e.g. export OPENAI_API_KEY
