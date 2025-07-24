@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  smartcopilot:
+    image: smartcopilot:latest
+    volumes:
+      - ha_config:/config
+      - ha_config/logs:/config/logs
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+volumes:
+  ha_config:
