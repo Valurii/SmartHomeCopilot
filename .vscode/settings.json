@@ -1,5 +1,18 @@
 {
     "files.watcherExclude": {
         "**/logs/**": false
-    }
+    },
+    "python.pythonPath": "/usr/local/bin/python3",
+    "python.autoComplete.extraPaths": [
+        "/config/custom_components/SmartHomeCopilot"
+    ],
+    "remote.SSH.remotePlatform": {
+        "raspberrypi": "linux"
+    },
+    "debugpy.lenv.pathMappings": [
+        {
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "/config/custom_components/SmartHomeCopilot"
+        }
+    ]
 }
