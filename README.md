@@ -162,6 +162,29 @@ Leveraging the AI Automation Suggester provides several key benefits:
 
 You can adjust these settings later via the integration options in Settings → Devices & Services.
 
+## 🐳 Docker Environment Variables
+
+When running Home Assistant in Docker you can provide credentials for this integration through environment variables. Set `OPENAI_API_KEY` when using OpenAI and `OLLAMA_URL` for local models like Ollama. Your docker-compose service might look like:
+
+```yaml
+services:
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    environment:
+      OPENAI_API_KEY: "your-openai-key"
+      OLLAMA_URL: "http://ollama:11434"
+```
+
+Reference these variables in `configuration.yaml` so Home Assistant loads them at start up:
+
+```yaml
+smart_home_copilot:
+  openai_api_key: !env_var OPENAI_API_KEY
+  ollama_url: !env_var OLLAMA_URL
+```
+
+Removing one of these variables disables that provider, letting you run purely local or cloud based models.
+
 ---
 
 ## 🛠️ Advanced Configuration
