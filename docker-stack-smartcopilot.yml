@@ -1,14 +1,37 @@
 version: "3.8"
 
+# Shared network for Home Assistant and the assistant container
+networks:
+  ha-net:
+
+# Persistent configuration and log volume
+volumes:
+  ha_config:
+
 services:
+  # Main Home Assistant instance
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    volumes:
+      - ha_config:/config            # store configuration
+      - ha_config/logs:/config/logs  # persistent logs
+    environment:
+      TZ: "${TZ:-UTC}"               # timezone from host
+    networks:
+      - ha-net
+
+  # Container running the SmartCopilot integration
   smartcopilot:
     image: smartcopilot:latest
     volumes:
-      - ha_config:/config
-      - ha_config/logs:/config/logs
+      - ha_config:/config            # share config with Home Assistant
+      - ha_config/logs:/config/logs  # same log directory
+    environment:
+      HASS_TOKEN: "${HASS_TOKEN}"     # token to access HA API
+      OLLAMA_URL: "${OLLAMA_URL}"     # local model endpoint
+      OPENAI_API_KEY: "${OPENAI_API_KEY:-}"  # optional cloud key
+    networks:
+      - ha-net
     deploy:
       restart_policy:
         condition: on-failure
-
-volumes:
-  ha_config:
