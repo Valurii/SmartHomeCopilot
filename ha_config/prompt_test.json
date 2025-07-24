@@ -1,0 +1,5 @@
+{
+  "_comment": "Modify focus or devices as needed. Paths can reference env vars.",
+  "focus": "basic lighting automation",
+  "devices": ["light.demo_lamp", "sensor.demo_temperature"]
+}
