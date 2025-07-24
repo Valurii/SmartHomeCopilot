@@ -431,6 +431,19 @@ bash scripts/setup_tests.sh
 pytest -q
 ```
 
+### Running `verify.sh`
+
+Use the `verify.sh` script for a quick end‑to‑end check of the docker stack. It
+deploys `docker-stack-smartcopilot.yml`, triggers the nightly automation, and
+tears everything down again. You need **Docker** and a valid
+`HASS_TOKEN` (a long‑lived access token from Home Assistant).
+
+```bash
+export HASS_TOKEN="your-token"
+./verify.sh
+```
+
+
 ---
 
 ## Disclaimer
