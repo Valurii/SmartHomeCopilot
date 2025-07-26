@@ -179,11 +179,13 @@ Reference these variables in `configuration.yaml` so Home Assistant loads them a
 
 ```yaml
 smart_home_copilot:
-  openai_api_key: !env_var OPENAI_API_KEY
+openai_api_key: !env_var OPENAI_API_KEY
   ollama_url: !env_var OLLAMA_URL
 ```
 
 Removing one of these variables disables that provider, letting you run purely local or cloud based models.
+
+When these environment variables are present, the integration setup form automatically pre-fills the corresponding API key fields so credentials never need to be typed into the UI.
 
 ---
 
