@@ -408,6 +408,7 @@ This project is licensed under the MIT License. See the LICENSE file for details
 ## Contributions
 
 We welcome contributions! If you have ideas for new features, improvements, bug fixes, or translations, please feel free to open an issue or submit a pull request on the GitHub repository. Please follow standard development practices.
+If you use an AI agent to generate changes, review the project guidelines in [AGENTS.md](./AGENTS.md).
 
 ## Development Setup
 
