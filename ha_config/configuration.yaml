@@ -3,11 +3,10 @@
 homeassistant:
   packages: !include demo_devices.yaml
 
-# Enable Smart Copilot integration. This can also be toggled by setting the
-# environment variable ``SMARTCOPILOT_ENABLED`` to ``false``.
-smartcopilot:
-  enabled: true
-
 smart_home_copilot:
   # Provider credentials can be stored in secrets.yaml or via environment variables
   # e.g. export OPENAI_API_KEY
+  # When using the provided Docker stack, set these environment variables
+  # so Home Assistant can reference them at startup.
+  openai_api_key: !env_var OPENAI_API_KEY
+  ollama_url: !env_var OLLAMA_URL

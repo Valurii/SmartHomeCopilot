@@ -2,6 +2,8 @@
 """Config flow for AI Automation Suggester."""
 from __future__ import annotations
 
+import os
+
 import logging
 from typing import Any, Dict, Optional
 
@@ -69,6 +71,25 @@ from .const import (  # noqa: E501  (long import list)
 )
 
 _LOGGER = logging.getLogger(__name__)
+
+
+ENV_VARS = {
+    CONF_OPENAI_API_KEY: "OPENAI_API_KEY",
+    CONF_ANTHROPIC_API_KEY: "ANTHROPIC_API_KEY",
+    CONF_GOOGLE_API_KEY: "GOOGLE_API_KEY",
+    CONF_GROQ_API_KEY: "GROQ_API_KEY",
+    CONF_CUSTOM_OPENAI_API_KEY: "CUSTOM_OPENAI_API_KEY",
+    CONF_MISTRAL_API_KEY: "MISTRAL_API_KEY",
+    CONF_PERPLEXITY_API_KEY: "PERPLEXITY_API_KEY",
+    CONF_OPENROUTER_API_KEY: "OPENROUTER_API_KEY",
+    CONF_OPENAI_AZURE_API_KEY: "OPENAI_AZURE_API_KEY",
+}
+
+
+def _env_default(key: str) -> str | None:
+    """Return default value from environment variables if present."""
+    env = ENV_VARS.get(key)
+    return os.getenv(env) if env else None
 
 
 # ─────────────────────────────────────────────────────────────
@@ -303,9 +324,10 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_openai(self, user_input=None):
         schema = {
-            vol.Required(CONF_OPENAI_API_KEY): TextSelector(
-                TextSelectorConfig(type="password")
-            ),
+            vol.Required(
+                CONF_OPENAI_API_KEY,
+                default=_env_default(CONF_OPENAI_API_KEY),
+            ): TextSelector(TextSelectorConfig(type="password")),
             vol.Optional(CONF_OPENAI_MODEL, default=DEFAULT_MODELS["OpenAI"]): str,
             vol.Optional(CONF_OPENAI_TEMPERATURE, default=DEFAULT_TEMPERATURE): vol.All(
                 vol.Coerce(float), vol.Range(min=0.0, max=2.0)
@@ -330,9 +352,10 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
 
         schema = {
-            vol.Required(CONF_ANTHROPIC_API_KEY): TextSelector(
-                TextSelectorConfig(type="password")
-            ),
+            vol.Required(
+                CONF_ANTHROPIC_API_KEY,
+                default=_env_default(CONF_ANTHROPIC_API_KEY),
+            ): TextSelector(TextSelectorConfig(type="password")),
             vol.Optional(
                 CONF_ANTHROPIC_MODEL, default=DEFAULT_MODELS["Anthropic"]
             ): str,
@@ -359,9 +382,10 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
 
         schema = {
-            vol.Required(CONF_GOOGLE_API_KEY): TextSelector(
-                TextSelectorConfig(type="password")
-            ),
+            vol.Required(
+                CONF_GOOGLE_API_KEY,
+                default=_env_default(CONF_GOOGLE_API_KEY),
+            ): TextSelector(TextSelectorConfig(type="password")),
             vol.Optional(CONF_GOOGLE_MODEL, default=DEFAULT_MODELS["Google"]): str,
             vol.Optional(CONF_GOOGLE_TEMPERATURE, default=DEFAULT_TEMPERATURE): vol.All(
                 vol.Coerce(float), vol.Range(min=0.0, max=2.0)
@@ -380,9 +404,10 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_groq(self, user_input=None):
         schema = {
-            vol.Required(CONF_GROQ_API_KEY): TextSelector(
-                TextSelectorConfig(type="password")
-            ),
+            vol.Required(
+                CONF_GROQ_API_KEY,
+                default=_env_default(CONF_GROQ_API_KEY),
+            ): TextSelector(TextSelectorConfig(type="password")),
             vol.Optional(CONF_GROQ_MODEL, default=DEFAULT_MODELS["Groq"]): str,
             vol.Optional(CONF_GROQ_TEMPERATURE, default=DEFAULT_TEMPERATURE): vol.All(
                 vol.Coerce(float), vol.Range(min=0.0, max=2.0)
@@ -462,9 +487,10 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         schema = {
             vol.Required(CONF_CUSTOM_OPENAI_ENDPOINT): str,
-            vol.Optional(CONF_CUSTOM_OPENAI_API_KEY): TextSelector(
-                TextSelectorConfig(type="password")
-            ),
+            vol.Optional(
+                CONF_CUSTOM_OPENAI_API_KEY,
+                default=_env_default(CONF_CUSTOM_OPENAI_API_KEY),
+            ): TextSelector(TextSelectorConfig(type="password")),
             vol.Optional(
                 CONF_CUSTOM_OPENAI_MODEL, default=DEFAULT_MODELS["Custom OpenAI"]
             ): str,
@@ -492,9 +518,10 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
 
         schema = {
-            vol.Required(CONF_MISTRAL_API_KEY): TextSelector(
-                TextSelectorConfig(type="password")
-            ),
+            vol.Required(
+                CONF_MISTRAL_API_KEY,
+                default=_env_default(CONF_MISTRAL_API_KEY),
+            ): TextSelector(TextSelectorConfig(type="password")),
             vol.Optional(CONF_MISTRAL_MODEL, default=DEFAULT_MODELS["Mistral AI"]): str,
             vol.Optional(
                 CONF_MISTRAL_TEMPERATURE, default=DEFAULT_TEMPERATURE
@@ -511,9 +538,10 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
 
         schema = {
-            vol.Required(CONF_PERPLEXITY_API_KEY): TextSelector(
-                TextSelectorConfig(type="password")
-            ),
+            vol.Required(
+                CONF_PERPLEXITY_API_KEY,
+                default=_env_default(CONF_PERPLEXITY_API_KEY),
+            ): TextSelector(TextSelectorConfig(type="password")),
             vol.Optional(
                 CONF_PERPLEXITY_MODEL, default=DEFAULT_MODELS["Perplexity AI"]
             ): str,
@@ -540,9 +568,10 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
 
         schema = {
-            vol.Required(CONF_OPENROUTER_API_KEY): TextSelector(
-                TextSelectorConfig(type="password")
-            ),
+            vol.Required(
+                CONF_OPENROUTER_API_KEY,
+                default=_env_default(CONF_OPENROUTER_API_KEY),
+            ): TextSelector(TextSelectorConfig(type="password")),
             vol.Optional(
                 CONF_OPENROUTER_MODEL, default=DEFAULT_MODELS["OpenRouter"]
             ): str,
@@ -575,9 +604,10 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return None
 
         schema = {
-            vol.Required(CONF_OPENAI_AZURE_API_KEY): TextSelector(
-                TextSelectorConfig(type="password")
-            ),
+            vol.Required(
+                CONF_OPENAI_AZURE_API_KEY,
+                default=_env_default(CONF_OPENAI_AZURE_API_KEY),
+            ): TextSelector(TextSelectorConfig(type="password")),
             vol.Optional(
                 CONF_OPENAI_AZURE_DEPLOYMENT_ID, default=DEFAULT_MODELS["OpenAI Azure"]
             ): str,
@@ -660,7 +690,11 @@ class AIAutomationOptionsFlowHandler(config_entries.OptionsFlow):
         if provider == "OpenAI":
             schema[
                 vol.Optional(
-                    CONF_OPENAI_API_KEY, default=self._get_option(CONF_OPENAI_API_KEY)
+                    CONF_OPENAI_API_KEY,
+                    default=self._get_option(
+                        CONF_OPENAI_API_KEY,
+                        _env_default(CONF_OPENAI_API_KEY),
+                    ),
                 )
             ] = TextSelector(TextSelectorConfig(type="password"))
             schema[
@@ -683,7 +717,10 @@ class AIAutomationOptionsFlowHandler(config_entries.OptionsFlow):
             schema[
                 vol.Optional(
                     CONF_ANTHROPIC_API_KEY,
-                    default=self._get_option(CONF_ANTHROPIC_API_KEY),
+                    default=self._get_option(
+                        CONF_ANTHROPIC_API_KEY,
+                        _env_default(CONF_ANTHROPIC_API_KEY),
+                    ),
                 )
             ] = TextSelector(TextSelectorConfig(type="password"))
             schema[
@@ -705,7 +742,11 @@ class AIAutomationOptionsFlowHandler(config_entries.OptionsFlow):
         elif provider == "Google":
             schema[
                 vol.Optional(
-                    CONF_GOOGLE_API_KEY, default=self._get_option(CONF_GOOGLE_API_KEY)
+                    CONF_GOOGLE_API_KEY,
+                    default=self._get_option(
+                        CONF_GOOGLE_API_KEY,
+                        _env_default(CONF_GOOGLE_API_KEY),
+                    ),
                 )
             ] = TextSelector(TextSelectorConfig(type="password"))
             schema[
@@ -727,7 +768,11 @@ class AIAutomationOptionsFlowHandler(config_entries.OptionsFlow):
         elif provider == "Groq":
             schema[
                 vol.Optional(
-                    CONF_GROQ_API_KEY, default=self._get_option(CONF_GROQ_API_KEY)
+                    CONF_GROQ_API_KEY,
+                    default=self._get_option(
+                        CONF_GROQ_API_KEY,
+                        _env_default(CONF_GROQ_API_KEY),
+                    ),
                 )
             ] = TextSelector(TextSelectorConfig(type="password"))
             schema[
@@ -828,7 +873,10 @@ class AIAutomationOptionsFlowHandler(config_entries.OptionsFlow):
             schema[
                 vol.Optional(
                     CONF_CUSTOM_OPENAI_API_KEY,
-                    default=self._get_option(CONF_CUSTOM_OPENAI_API_KEY),
+                    default=self._get_option(
+                        CONF_CUSTOM_OPENAI_API_KEY,
+                        _env_default(CONF_CUSTOM_OPENAI_API_KEY),
+                    ),
                 )
             ] = TextSelector(TextSelectorConfig(type="password"))
             schema[
@@ -850,7 +898,11 @@ class AIAutomationOptionsFlowHandler(config_entries.OptionsFlow):
         elif provider == "Mistral AI":
             schema[
                 vol.Optional(
-                    CONF_MISTRAL_API_KEY, default=self._get_option(CONF_MISTRAL_API_KEY)
+                    CONF_MISTRAL_API_KEY,
+                    default=self._get_option(
+                        CONF_MISTRAL_API_KEY,
+                        _env_default(CONF_MISTRAL_API_KEY),
+                    ),
                 )
             ] = TextSelector(TextSelectorConfig(type="password"))
             schema[
@@ -873,7 +925,10 @@ class AIAutomationOptionsFlowHandler(config_entries.OptionsFlow):
             schema[
                 vol.Optional(
                     CONF_PERPLEXITY_API_KEY,
-                    default=self._get_option(CONF_PERPLEXITY_API_KEY),
+                    default=self._get_option(
+                        CONF_PERPLEXITY_API_KEY,
+                        _env_default(CONF_PERPLEXITY_API_KEY),
+                    ),
                 )
             ] = TextSelector(TextSelectorConfig(type="password"))
             schema[
@@ -896,7 +951,10 @@ class AIAutomationOptionsFlowHandler(config_entries.OptionsFlow):
             schema[
                 vol.Optional(
                     CONF_OPENROUTER_API_KEY,
-                    default=self._get_option(CONF_OPENROUTER_API_KEY),
+                    default=self._get_option(
+                        CONF_OPENROUTER_API_KEY,
+                        _env_default(CONF_OPENROUTER_API_KEY),
+                    ),
                 )
             ] = TextSelector(TextSelectorConfig(type="password"))
             schema[
@@ -925,7 +983,10 @@ class AIAutomationOptionsFlowHandler(config_entries.OptionsFlow):
             schema[
                 vol.Optional(
                     CONF_OPENAI_AZURE_API_KEY,
-                    default=self._get_option(CONF_OPENAI_AZURE_API_KEY),
+                    default=self._get_option(
+                        CONF_OPENAI_AZURE_API_KEY,
+                        _env_default(CONF_OPENAI_AZURE_API_KEY),
+                    ),
                 )
             ] = TextSelector(TextSelectorConfig(type="password"))
             schema[
