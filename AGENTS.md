@@ -2,36 +2,38 @@
 
 ## Purpose
 
-This file provides essential project-specific instructions for AI agents (e.g., Codex, Claude, Gemini) interacting with the SmartHomeCopilot codebase. It ensures that code suggestions, refactoring, and completions align with the design principles and architectural conventions of the project.
+Short reference for AI agents (Codex, Claude, Gemini, etc.) working on this repository.
+It ensures suggestions and code changes stay consistent with project rules.
 
-## Project Summary
+## Project Overview
 
-SmartHomeCopilot is a custom Home Assistant integration that uses large language models (LLMs) to suggest intelligent YAML automations tailored to the user's environment. It analyzes entities, areas, and device states and generates safe, functional automations in YAML format.
+SmartHomeCopilot is an AI‑driven assistant for Home Assistant.
+It is provided as a custom integration that generates YAML automations.
 
-## Agent Instructions
+## Important Instructions for AI Agents
 
-- All YAML suggestions **must be syntactically correct** and properly indented.
-- Use only **valid Home Assistant entity IDs** where possible.
-- Include the following sections in automation YAML (in order):
-  1. `alias`
-  2. `trigger`
-  3. `condition` (optional)
-  4. `action`
-- Always use `mode: single` or `mode: restart` unless the use case clearly benefits from `queued`.
-- Do **not** hardcode credentials or example API keys in YAML examples.
-- Avoid entities that begin with `test_` (used for internal testing).
-- Use consistent naming for automations: `auto_<area>_<purpose>` (e.g., `auto_kitchen_lights_night`).
+- YAML must be valid and correctly indented.
+- Use real Home Assistant entity IDs when known.
+- Never include credentials or API keys in examples.
+- Keep suggestions concise and easy to verify.
+- Automation YAML should contain `alias`, `trigger`, `condition`, `action` in that order.
 
-## Project Structure
+## Project‑Specific Rules
 
-- Custom integration path: `custom_components/smart_home_copilot/`
-- YAML prompt context: `data/context/automation.yaml`
-- System prompt source (used by backend LLM): `core/prompts/system_prompt.txt`
-- Example frontend API: `smart_home_copilot/frontend/` (for UI suggestions)
+- Ignore automations referencing entities with an `_test` prefix.
+- Automation IDs follow `auto_{{area}}_{{description}}`.
+- Prefer `mode: single` or `mode: restart`; use `mode: queued` only if necessary.
 
-## Prompting Context (for Agents)
+## Technical Reference
 
-This file may be prepended as part of a system prompt for Codex- or Claude-style tools.
-Keep your responses concise, context-aware, and focused on YAML or Home Assistant-specific logic.
-When referring to automations, assume the user is not an expert in Home Assistant YAML.
+- Integration folder: `custom_components/smart_home_copilot/`
+- Automation context: `data/context/automation.yaml`
+- User configuration: `config/configuration.yaml`
+- System prompts: `core/prompts/system_prompt.txt`
+
+## Notes for GPT‑Based Agents
+
+- This file is used as system context when prompting.
+- Follow Markdown syntax.
+- Maximize information value and minimize tokens.
 
