@@ -15,3 +15,6 @@ dist/
 .venv
 env/
 venv/
+
+# Home Assistant custom integration secrets
+custom_components/SmartHomeCopilot/credentials.yaml
