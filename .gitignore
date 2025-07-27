@@ -11,10 +11,16 @@ dist/
 *.egg-info/
 
 # Virtual environments
-.env
 .venv
 env/
 venv/
 
 # Home Assistant custom integration secrets
-custom_components/smarthomecopilot/credentials.yaml
+custom_components/smart_home_copilot/credentials.yaml
+
+# Root credentials file
+credentials.yaml
+
+# Other common secret files
+.env
+.env.*

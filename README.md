@@ -188,6 +188,19 @@ Removing one of these variables disables that provider, letting you run purely l
 
 When these environment variables are present, the integration setup form automatically pre-fills the corresponding API key fields so credentials never need to be typed into the UI.
 
+### `credentials.yaml`
+
+As an alternative to environment variables you can keep your API keys in a file. Copy `credentials.yaml.example` to `credentials.yaml` and enter your secrets there. The file is ignored by Git so your keys stay private. When using Docker, mount this file into the container:
+
+```yaml
+services:
+  homeassistant:
+    volumes:
+      - ./credentials.yaml:/config/credentials.yaml:ro
+```
+
+Either approach works – use whichever fits your setup best.
+
 ---
 
 ## 🛠️ Advanced Configuration
