@@ -12,7 +12,7 @@ An AI-powered Home Assistant custom integration that suggests automations based 
 
 ## Installation
 
-1. Copy the `smarthomecopilot` folder to your `custom_components` directory.
+1. Copy the `smart_home_copilot` folder to your `custom_components` directory.
 2. Copy the `SmartHome-Copilot-card.js` file to `www/SmartHome_Copilot/` directory.
 3. Restart Home Assistant.
 4. In Home Assistant, navigate to **Configuration** > **Integrations**.

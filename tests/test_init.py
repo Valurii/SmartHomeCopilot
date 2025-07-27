@@ -16,7 +16,7 @@ from pytest_homeassistant_custom_component.common import (
     async_test_home_assistant,
 )
 
-from SmartHomeCopilot.const import (
+from smart_home_copilot.const import (
     DOMAIN,
     CONF_PROVIDER,
     CONFIG_VERSION,

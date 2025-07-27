@@ -1,4 +1,4 @@
-# custom_components/smarthomecopilot/coordinator.py
+# custom_components/smart_home_copilot/coordinator.py
 """Coordinator for AI Automation Suggester."""
 
 from __future__ import annotations

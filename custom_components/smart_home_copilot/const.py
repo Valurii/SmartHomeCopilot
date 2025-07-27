@@ -1,12 +1,12 @@
-"""Constants for the SmartHomeCopilot integration."""
+"""Constants for the Smart Home Copilot integration."""
 
 # ─────────────────────────────────────────────────────────────
 # Core
 # ─────────────────────────────────────────────────────────────
-DOMAIN = "smarthomecopilot"
+DOMAIN = "smart_home_copilot"
 PLATFORMS = ["sensor"]
 CONFIG_VERSION = 2  # config‑entry version (used by async_migrate_entry)
-INTEGRATION_NAME = "SmartHomeCopilot"
+INTEGRATION_NAME = "Smart Home Copilot"
 
 # ─────────────────────────────────────────────────────────────
 # Token budgeting

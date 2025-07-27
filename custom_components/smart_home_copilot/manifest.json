@@ -1,5 +1,5 @@
 {
-  "domain": "smarthomecopilot",
+  "domain": "smart_home_copilot",
   "name": "Smart Home Copilot",
   "codeowners": ["@fjoelnr"],
   "config_flow": true,

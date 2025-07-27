@@ -13,7 +13,7 @@ import yaml
 from pathlib import Path
 import re
 
-from ..SmartHomeCopilot.const import DOMAIN as COPILOT_DOMAIN
+from ..smart_home_copilot.const import DOMAIN as COPILOT_DOMAIN
 
 
 CONFIG_SCHEMA = cv.config_entry_only_config_schema
