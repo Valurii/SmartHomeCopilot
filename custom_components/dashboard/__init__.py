@@ -7,11 +7,16 @@ from typing import Any
 from homeassistant.core import HomeAssistant
 from homeassistant.components.http import HomeAssistantView
 from homeassistant.components import persistent_notification
+import homeassistant.helpers.config_validation as cv
+
 import yaml
 from pathlib import Path
 import re
 
 from ..SmartHomeCopilot.const import DOMAIN as COPILOT_DOMAIN
+
+
+CONFIG_SCHEMA = cv.config_entry_only_config_schema
 
 _LOGGER = logging.getLogger(__name__)
 
