@@ -229,4 +229,27 @@
         }
       }
     }
-  }}
+  },
+  "entity": {
+    "sensor": {
+      "ai_automation_suggestions": {
+        "name": "KI-Automatisierungsvorschläge ({provider})"
+      },
+      "ai_provider_status": {
+        "name": "KI-Anbieterstatus ({provider})"
+      },
+      "max_input_tokens": {
+        "name": "Maximale Eingabe-Tokens ({provider})"
+      },
+      "max_output_tokens": {
+        "name": "Maximale Ausgabe-Tokens ({provider})"
+      },
+      "ai_model_in_use": {
+        "name": "Verwendetes KI-Modell ({provider})"
+      },
+      "last_error_message": {
+        "name": "Letzte Fehlermeldung ({provider})"
+      }
+    }
+  }
+}

@@ -229,5 +229,27 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "ai_automation_suggestions": {
+        "name": "AI Automation Suggestions ({provider})"
+      },
+      "ai_provider_status": {
+        "name": "AI Provider Status ({provider})"
+      },
+      "max_input_tokens": {
+        "name": "Max Input Tokens ({provider})"
+      },
+      "max_output_tokens": {
+        "name": "Max Output Tokens ({provider})"
+      },
+      "ai_model_in_use": {
+        "name": "AI Model In Use ({provider})"
+      },
+      "last_error_message": {
+        "name": "Last Error Message ({provider})"
+      }
+    }
   }
 }
