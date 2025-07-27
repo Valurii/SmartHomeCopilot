@@ -33,19 +33,21 @@ class CopilotSuggestionsView(HomeAssistantView):
     async def get(self, request):
         hass = request.app["hass"]
         suggestions = []
+        counter = 0
         for coordinator in hass.data.get(COPILOT_DOMAIN, {}).values():
             data = getattr(coordinator, "data", {})
-            if data.get("yaml_block"):
+            for sug in data.get("suggestions", []):
                 suggestions.append(
                     {
-                        "id": 0,
-                        "title": "Automation Suggestion",
-                        "shortDescription": data.get("description"),
-                        "detailedDescription": data.get("description"),
-                        "yamlCode": data.get("yaml_block"),
+                        "id": counter,
+                        "title": sug.get("title", "Automation Suggestion"),
+                        "shortDescription": sug.get("description"),
+                        "detailedDescription": sug.get("description"),
+                        "yamlCode": sug.get("yaml"),
                         "showDetails": False,
                     }
                 )
+                counter += 1
         return self.json(suggestions)
 
 
@@ -63,7 +65,14 @@ class CopilotActionView(HomeAssistantView):
             return self.json({"success": False, "error": "No coordinator"})
 
         data = getattr(coordinator, "data", {})
-        yaml_block = data.get("yaml_block")
+        suggestions = data.get("suggestions", [])
+        try:
+            idx = int(suggestion_id)
+            suggestion = suggestions[idx]
+        except (ValueError, IndexError):
+            return self.json({"success": False, "error": "Invalid suggestion id"})
+
+        yaml_block = suggestion.get("yaml")
         if action == "accept" and yaml_block:
             placeholders = re.findall(r"<<([^>]+)>>", yaml_block)
             replaced = {}
@@ -107,15 +116,9 @@ class CopilotActionView(HomeAssistantView):
         elif action == "decline":
             _LOGGER.info("Suggestion %s declined", suggestion_id)
 
-        # Mark suggestion as handled
-        coordinator.data.update(
-            {
-                "suggestions": "No suggestions available",
-                "description": None,
-                "yaml_block": None,
-                "entities_processed": [],
-            }
-        )
+        # Remove handled suggestion
+        suggestions.pop(idx)
+        coordinator.data.update({"suggestions": suggestions})
         coordinator.async_set_updated_data(coordinator.data)
 
         return self.json({"success": True})

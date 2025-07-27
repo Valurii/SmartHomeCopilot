@@ -37,7 +37,7 @@ async def test_async_setup_entry(expected_lingering_timers):
     }
     with patch("homeassistant.util.dt.get_time_zone", return_value=ZoneInfo("UTC")):
         async with async_test_home_assistant(**kwargs) as hass:
-            hass.config.set_time_zone("UTC")
+            await hass.config.async_set_time_zone("UTC")
             hass.data.pop(LOADER_CUSTOM, None)
             entry = MockConfigEntry(
                 domain=DOMAIN,
