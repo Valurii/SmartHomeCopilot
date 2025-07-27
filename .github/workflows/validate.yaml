@@ -2,6 +2,7 @@ name: Validate
 
 on:
   push:
+    branches: [ "main" ]
   pull_request:
   schedule:
     - cron: "0 0 * * *"
@@ -16,7 +17,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: "3.12"
       - name: HACS validation
         uses: hacs/action@main
         with:
