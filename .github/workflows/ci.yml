@@ -17,8 +17,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install homeassistant==2024.6.2 pytest pytest-homeassistant-custom-component pyyaml voluptuous openai anthropic aiohttp
-      - name: Run hassfest validation
-        run: |
-          hassfest
+      - name: Validate with hassfest
+        uses: home-assistant/actions/hassfest@master
       - name: Run tests
         run: pytest -q
