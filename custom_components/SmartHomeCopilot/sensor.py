@@ -237,9 +237,7 @@ class AISuggestionsSensor(AIBaseSensor):
         # Initialize state with default values
         self._attr_native_value = "No Suggestions"
         self._attr_extra_state_attributes = {
-            "suggestions": "No suggestions yet",
-            "description": None,
-            "yaml_block": None,
+            "suggestions": [],
             "last_update": None,
             "entities_processed": [],
             "provider": self._entry.data.get(CONF_PROVIDER, "unknown"),
@@ -257,13 +255,10 @@ class AISuggestionsSensor(AIBaseSensor):
     def _update_state_and_attributes(self) -> None:
         """Update sensor state and attributes."""
         data = self.coordinator.data or {}
-        suggestions = data.get("suggestions")
+        suggestions = data.get("suggestions", [])
         last_update_timestamp = data.get("last_update")
 
-        if suggestions and suggestions not in (
-            "No suggestions available",
-            "No suggestions yet",
-        ):
+        if suggestions:
             if last_update_timestamp and (
                 self._previous_suggestions_timestamp is None
                 or last_update_timestamp > self._previous_suggestions_timestamp
@@ -277,8 +272,6 @@ class AISuggestionsSensor(AIBaseSensor):
 
         self._attr_extra_state_attributes = {
             "suggestions": suggestions,
-            "description": data.get("description"),
-            "yaml_block": data.get("yaml_block"),
             "last_update": data.get("last_update"),
             "entities_processed": data.get("entities_processed", []),
             "provider": self._entry.data.get(CONF_PROVIDER, "unknown"),

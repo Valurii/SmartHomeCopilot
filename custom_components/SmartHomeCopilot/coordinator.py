@@ -139,9 +139,7 @@ class AIAutomationCoordinator(DataUpdateCoordinator):
         self._last_error: str | None = None
 
         self.data: dict = {
-            "suggestions": "No suggestions yet",
-            "description": None,
-            "yaml_block": None,
+            "suggestions": [],
             "last_update": None,
             "entities_processed": [],
             "provider": self._opt(CONF_PROVIDER, "unknown"),
@@ -233,9 +231,18 @@ class AIAutomationCoordinator(DataUpdateCoordinator):
             response = await self._dispatch(prompt)
 
             if response:
-                match = YAML_RE.search(response)
-                yaml_block = match.group(1).strip() if match else None
-                description = YAML_RE.sub("", response).strip() if match else None
+                matches = YAML_RE.findall(response)
+                parts = YAML_RE.split(response)
+                suggestions_list = []
+                for idx, yaml_block in enumerate(matches):
+                    description = parts[idx * 2].strip()
+                    suggestions_list.append(
+                        {
+                            "title": "Automation Suggestion",
+                            "description": description,
+                            "yaml": yaml_block.strip(),
+                        }
+                    )
 
                 persistent_notification.async_create(
                     self.hass,
@@ -246,9 +253,7 @@ class AIAutomationCoordinator(DataUpdateCoordinator):
                 )
 
                 self.data = {
-                    "suggestions": response,
-                    "description": description,
-                    "yaml_block": yaml_block,
+                    "suggestions": suggestions_list,
                     "last_update": now,
                     "entities_processed": list(picked.keys()),
                     "provider": self._opt(CONF_PROVIDER, "unknown"),
@@ -257,9 +262,7 @@ class AIAutomationCoordinator(DataUpdateCoordinator):
             else:
                 self.data.update(
                     {
-                        "suggestions": "No suggestions available",
-                        "description": None,
-                        "yaml_block": None,
+                        "suggestions": [],
                         "last_update": now,
                         "entities_processed": [],
                         "last_error": self._last_error,

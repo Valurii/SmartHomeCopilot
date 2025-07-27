@@ -58,7 +58,7 @@ async def test_coordinator_budgets():
     }
     with patch("homeassistant.util.dt.get_time_zone", return_value=ZoneInfo("UTC")):
         async with async_test_home_assistant(**kwargs) as hass:
-            hass.config.set_time_zone("UTC")
+            await hass.config.async_set_time_zone("UTC")
             hass.data.pop(LOADER_CUSTOM, None)
             entry = MockConfigEntry(
                 domain=DOMAIN,
@@ -105,7 +105,7 @@ async def test_sensor_updates():
     }
     with patch("homeassistant.util.dt.get_time_zone", return_value=ZoneInfo("UTC")):
         async with async_test_home_assistant(**kwargs) as hass:
-            hass.config.set_time_zone("UTC")
+            await hass.config.async_set_time_zone("UTC")
             hass.data.pop(LOADER_CUSTOM, None)
             entry = MockConfigEntry(
                 domain=DOMAIN,
@@ -144,9 +144,9 @@ async def test_sensor_updates():
 
         now = datetime.now()
         new_data = {
-            "suggestions": "try this",
-            "description": "desc",
-            "yaml_block": "yaml",
+            "suggestions": [
+                {"title": "t", "description": "desc", "yaml": "yaml"}
+            ],
             "last_update": now,
             "entities_processed": ["sensor.test"],
             "provider": "OpenAI",
@@ -159,6 +159,7 @@ async def test_sensor_updates():
 
         assert sugg.native_value == "New Suggestions Available"
         assert sugg.extra_state_attributes["entities_processed_count"] == 1
+        assert sugg.extra_state_attributes["suggestions"] == new_data["suggestions"]
         assert status.native_value == PROVIDER_STATUS_CONNECTED
         assert err.native_value == "No Error"
 
