@@ -7,7 +7,8 @@ An AI-powered Home Assistant custom integration that suggests automations based 
 - Scans entities periodically to detect new devices.
 - Uses AI (e.g., OpenAI's GPT-4o) to generate automation suggestions.
 - Provides a frontend interface for users to review and accept suggestions.
-- Allows users to map placeholders to actual entities upon acceptance.
+- Warns about placeholders in suggestions and maps them to the first matching
+  entity if possible during acceptance.
 - Adds accepted automations to Home Assistant.
 
 ## Installation

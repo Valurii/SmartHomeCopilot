@@ -6,8 +6,10 @@ from typing import Any
 
 from homeassistant.core import HomeAssistant
 from homeassistant.components.http import HomeAssistantView
+from homeassistant.components import persistent_notification
 import yaml
 from pathlib import Path
+import re
 
 from ..SmartHomeCopilot.const import DOMAIN as COPILOT_DOMAIN
 
@@ -63,11 +65,33 @@ class CopilotActionView(HomeAssistantView):
         data = getattr(coordinator, "data", {})
         yaml_block = data.get("yaml_block")
         if action == "accept" and yaml_block:
+            placeholders = re.findall(r"<<([^>]+)>>", yaml_block)
+            replaced = {}
+            for ph in placeholders:
+                domain = ph.lower().split("_")[0]
+                entities = hass.states.async_entity_ids(domain)
+                if entities:
+                    replacement = entities[0]
+                    yaml_block = yaml_block.replace(f"<<{ph}>>", replacement)
+                    replaced[ph] = replacement
             try:
                 yaml.safe_load(yaml_block)
             except yaml.YAMLError as err:
                 _LOGGER.error("Failed to parse YAML: %s", err)
                 return self.json({"success": False, "error": "Invalid YAML"})
+
+            if placeholders:
+                msg_lines = [
+                    "Placeholder mappings:",
+                    *[f"{p} -> {replaced.get(p, 'unresolved')}" for p in placeholders],
+                    "Please review the automation and adjust if needed.",
+                ]
+                persistent_notification.async_create(
+                    hass,
+                    "\n".join(msg_lines),
+                    title="SmartHome Copilot Placeholder Mapping",
+                    notification_id=f"ai_copilot_placeholder_{suggestion_id}",
+                )
 
             file_path = Path(hass.config.path("automations.yaml"))
             file_path.parent.mkdir(parents=True, exist_ok=True)

@@ -111,6 +111,7 @@ Leveraging the AI Automation Suggester provides several key benefits:
 * **Diagnostics Sensors:** Monitor suggestion status and provider connection health.
 * **Example Automations:** Includes built-in examples for new entity detection and weekly reviews.
 * **Dashboard-Friendly Output:** Sensor attributes provide description and YAML blocks ready for Lovelace cards.
+* **Placeholder Mapping:** When accepting a suggestion, detected placeholders are replaced with the first matching entity and a notification summarizes the mapping.
 
 ---
 
