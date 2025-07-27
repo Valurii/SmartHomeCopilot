@@ -74,18 +74,18 @@ PROVIDER_TO_MODEL_KEY_MAP: dict[str, str] = {
 SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
     SensorEntityDescription(
         key=SENSOR_KEY_SUGGESTIONS,
-        name="AI Automation Suggestions",
+        translation_key="ai_automation_suggestions",
         icon="mdi:robot-happy-outline",
     ),
     SensorEntityDescription(
         key=SENSOR_KEY_STATUS,
-        name="AI Provider Status",
+        translation_key="ai_provider_status",
         icon="mdi:lan-check",
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     SensorEntityDescription(
         key=SENSOR_KEY_INPUT_TOKENS,
-        name="Max Input Tokens",
+        translation_key="max_input_tokens",
         icon="mdi:format-letter-starts-with",
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement="tokens",
@@ -93,7 +93,7 @@ SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
     ),
     SensorEntityDescription(
         key=SENSOR_KEY_OUTPUT_TOKENS,
-        name="Max Output Tokens",
+        translation_key="max_output_tokens",
         icon="mdi:format-letter-ends-with",
         entity_category=EntityCategory.DIAGNOSTIC,
         native_unit_of_measurement="tokens",
@@ -101,13 +101,13 @@ SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
     ),
     SensorEntityDescription(
         key=SENSOR_KEY_MODEL,
-        name="AI Model In Use",
+        translation_key="ai_model_in_use",
         icon="mdi:brain",
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     SensorEntityDescription(
         key=SENSOR_KEY_LAST_ERROR,
-        name="Last Error Message",
+        translation_key="last_error_message",
         icon="mdi:alert-circle-outline",
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
@@ -125,10 +125,10 @@ async def async_setup_entry(
 
     entities: list[SensorEntity] = []
     for description in SENSOR_DESCRIPTIONS:
-        formatted_name = f"{description.name} ({provider_name})"
         specific_description = SensorEntityDescription(
             key=description.key,
-            name=formatted_name,
+            translation_key=description.translation_key,
+            translation_placeholders={"provider": provider_name},
             icon=description.icon,
             entity_category=description.entity_category,
             native_unit_of_measurement=description.native_unit_of_measurement,

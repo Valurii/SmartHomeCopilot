@@ -40,6 +40,36 @@ export class SmartHomeCopilotCard extends LitElement {
   @property({ type: Array }) suggestions = [];
   @state() loading = true;
   @state() error = null;
+
+  static LOCALIZED_STRINGS = {
+    en: {
+      title: 'AI Automation Suggestions',
+      loading: 'Loading suggestions...',
+      details: 'Details',
+      copyYaml: 'Copy YAML',
+      accept: 'Accept',
+      decline: 'Decline',
+      copied: 'YAML code copied to clipboard!',
+      fetchError: 'Failed to fetch suggestions.',
+      errorPrefix: 'Error: '
+    },
+    de: {
+      title: 'KI-Automatisierungsvorschläge',
+      loading: 'Vorschläge werden geladen...',
+      details: 'Details',
+      copyYaml: 'YAML kopieren',
+      accept: 'Annehmen',
+      decline: 'Ablehnen',
+      copied: 'YAML-Code in die Zwischenablage kopiert!',
+      fetchError: 'Fehler beim Abrufen der Vorschläge.',
+      errorPrefix: 'Fehler: '
+    }
+  };
+
+  get strings() {
+    const lang = (this.hass?.language || 'en').split('-')[0];
+    return SmartHomeCopilotCard.LOCALIZED_STRINGS[lang] || SmartHomeCopilotCard.LOCALIZED_STRINGS.en;
+  }
   connectedCallback() {
     super.connectedCallback();
     this.fetchData();
@@ -51,7 +81,7 @@ export class SmartHomeCopilotCard extends LitElement {
       const response = await this.hass.callApi('GET', '/api/SmartHome_Copilot/suggestions');
       this.suggestions = response;
     } catch (err) {
-      this.error = err.message || 'Failed to fetch suggestions.';
+      this.error = err.message || this.strings.fetchError;
     } finally {
       this.loading = false;
     }
@@ -65,7 +95,7 @@ export class SmartHomeCopilotCard extends LitElement {
     this.dispatchEvent(new CustomEvent('hass-notification', {
       detail: {
         type: 'info',
-        message: 'YAML code copied to clipboard!',
+        message: this.strings.copied,
       },
     }));
   }
@@ -85,24 +115,24 @@ export class SmartHomeCopilotCard extends LitElement {
     return html`
       <ha-card>
         <div>
-          <h2>AI Automation Suggestions</h2>
+          <h2>${this.strings.title}</h2>
           ${this.loading
-            ? html`<p>Loading suggestions...</p>`
+            ? html`<p>${this.strings.loading}</p>`
             : this.error
-              ? html`<p class="error">Error: ${this.error}</p>`
+              ? html`<p class="error">${this.strings.errorPrefix}${this.error}</p>`
               : html`
                   <ul>
                     ${this.suggestions.map(suggestion => html`
                       <li>
                         <h3>${suggestion.title}</h3>
                         <p>${suggestion.shortDescription}</p>
-                        <button @click="${() => this.toggleDetails(suggestion)}">Details</button>
+                        <button @click="${() => this.toggleDetails(suggestion)}">${this.strings.details}</button>
                         <div class="details" ?open="${suggestion.showDetails}">
                           <p>${suggestion.detailedDescription}</p>
                           <pre><code class="language-yaml">${suggestion.yamlCode}</code></pre>
-                          <button @click="${() => this.copyYaml(suggestion.yamlCode)}">Copy YAML</button>
-                          <button @click="${() => this.handleSuggestionAction(suggestion.id, 'accept')}">Accept</button>
-                          <button @click="${() => this.handleSuggestionAction(suggestion.id, 'decline')}">Decline</button>
+                          <button @click="${() => this.copyYaml(suggestion.yamlCode)}">${this.strings.copyYaml}</button>
+                          <button @click="${() => this.handleSuggestionAction(suggestion.id, 'accept')}">${this.strings.accept}</button>
+                          <button @click="${() => this.handleSuggestionAction(suggestion.id, 'decline')}">${this.strings.decline}</button>
                         </div>
                       </li>
                     `)}
