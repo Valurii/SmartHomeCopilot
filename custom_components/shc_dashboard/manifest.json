@@ -1,10 +1,10 @@
 {
   "domain": "shc_dashboard",
-  "name": "Smart Home Copilot Dashboard",
+  "name": "SHC Dashboard",
+  "codeowners": ["@fjoelnr"],
+  "dependencies": ["smart_home_copilot", "http"],
   "documentation": "https://github.com/fjoelnr/SmartHomeCopilot/shc_dashboard/",
-  "version": "0.1.0",
   "iot_class": "local_polling",
   "requirements": [],
-  "dependencies": ["smart_home_copilot", "http"],
-  "codeowners": ["@fjoelnr"]
+  "version": "0.1.0"
 }

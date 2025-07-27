@@ -13,6 +13,10 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, ServiceCall, callback
 from homeassistant.exceptions import ConfigEntryNotReady, ServiceValidationError
 from homeassistant.helpers.typing import ConfigType
+import homeassistant.helpers.config_validation as cv
+
+# Da keine YAML-Konfiguration nötig ist:
+CONFIG_SCHEMA = cv.empty_config_schema
 
 from .const import (
     DOMAIN,
