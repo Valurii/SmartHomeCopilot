@@ -1,6 +1,6 @@
 {
-  "domain": "smart_home_copilot",
-  "name": "SmartHomeCopilot",
+  "domain": "smarthomecopilot",
+  "name": "Smart Home Copilot",
   "codeowners": ["@fjoelnr"],
   "config_flow": true,
   "dependencies": [],
@@ -14,5 +14,5 @@
     "pyyaml>=6.0",
     "voluptuous>=0.13.1"
   ],
-  "version": "1.4.0"
+  "version": "0.1.0"
 }
