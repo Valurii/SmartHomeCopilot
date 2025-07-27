@@ -1,4 +1,4 @@
-# custom_components/SmartHomeCopilot/config_flow.py
+# custom_components/smarthomecopilot/config_flow.py
 """Config flow for AI Automation Suggester."""
 from __future__ import annotations
 

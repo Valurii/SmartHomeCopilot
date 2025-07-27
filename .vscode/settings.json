@@ -4,7 +4,7 @@
     },
     "python.pythonPath": "/usr/local/bin/python3",
     "python.autoComplete.extraPaths": [
-        "/config/custom_components/SmartHomeCopilot"
+        "/config/custom_components/smarthomecopilot"
     ],
     "remote.SSH.remotePlatform": {
         "raspberrypi": "linux"
@@ -12,7 +12,7 @@
     "debugpy.lenv.pathMappings": [
         {
             "localRoot": "${workspaceFolder}",
-            "remoteRoot": "/config/custom_components/SmartHomeCopilot"
+            "remoteRoot": "/config/custom_components/smarthomecopilot"
         }
     ]
 }

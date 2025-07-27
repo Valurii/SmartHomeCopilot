@@ -17,4 +17,4 @@ env/
 venv/
 
 # Home Assistant custom integration secrets
-custom_components/SmartHomeCopilot/credentials.yaml
+custom_components/smarthomecopilot/credentials.yaml

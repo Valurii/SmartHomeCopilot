@@ -138,7 +138,7 @@ Leveraging the AI Automation Suggester provides several key benefits:
 ### Manual Installation
 
 1.  **Download** the contents of this repository.
-2.  **Copy** the `custom_components/SmartHomeCopilot` folder to your Home Assistant `custom_components` directory.
+2.  **Copy** the `custom_components/smarthomecopilot` folder to your Home Assistant `custom_components` directory.
     ```bash
     <homeassistant_config_dir>/
     └── custom_components/
@@ -371,7 +371,7 @@ Monitor these sensors to ensure the integration is functioning correctly.
 | Symptom                                 | Check / Action                                                                                                                               |
 |-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
 | **No suggestions available** | - Verify API key is correct.<br>- Check the `AI Provider Status` sensor for errors.<br>- Check the Home Assistant logs for errors related to the integration.<br>- Try triggering the service manually with a small `entity_limit` and no domain filters.<br>- Ensure you have enough entities/devices for meaningful suggestions. |
-| **AI Provider Status shows `error`** | - Inspect the Home Assistant log (`home-assistant.log`) for detailed error messages (look for `SmartHomeCopilot` and `processing error`).<br>- Check your network connection to the provider's server (if cloud-based) or your local server.<br>- Confirm your API key is active and has permissions.<br>- Ensure your local AI server is running and accessible. |
+| **AI Provider Status shows `error`** | - Inspect the Home Assistant log (`home-assistant.log`) for detailed error messages (look for `smarthomecopilot` and `processing error`).<br>- Check your network connection to the provider's server (if cloud-based) or your local server.<br>- Confirm your API key is active and has permissions.<br>- Ensure your local AI server is running and accessible. |
 | **Suggestion prompt is too long** | - Reduce the `entity_limit` parameter when triggering the service or configuring the automation.<br>- Use the `domains` filter to narrow the scope of entities analyzed.<br>- Shorten or simplify your `custom_prompt` if you are using one. |
 | **Unintended startup suggestions** | - Review your Home Assistant automations and scripts to ensure none are configured to call `smart_home_copilot.generate_suggestions` on startup or via events you didn't intend. |
 | **Suggestions are repetitive** | - Ensure `all_entities` is used (e.g., in a weekly automation) and consider enabling randomized entity selection.<br>- Try different `custom_prompt` values to steer the AI in a new direction.<br>- Increase the `entity_limit` to give the AI more data points (if prompt length allows). |
@@ -460,7 +460,7 @@ For further questions, discussions, or assistance, please visit the GitHub repos
 ## ❓ FAQ
 
 **1. How do I update the integration?**
-If installed via HACS, update directly through the HACS interface in Home Assistant. If installed manually, download the latest version of the files from the repository and replace the existing ones in your `custom_components/SmartHomeCopilot` folder, then restart Home Assistant.
+If installed via HACS, update directly through the HACS interface in Home Assistant. If installed manually, download the latest version of the files from the repository and replace the existing ones in your `custom_components/smarthomecopilot` folder, then restart Home Assistant.
 
 **2. Can I use this integration without a cloud API key?**
 Yes! You can use local AI models like those provided by LocalAI or Ollama running on your local network. This requires setting up and running the local AI server separately.

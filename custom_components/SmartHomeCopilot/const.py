@@ -3,7 +3,7 @@
 # ─────────────────────────────────────────────────────────────
 # Core
 # ─────────────────────────────────────────────────────────────
-DOMAIN = "smart_home_copilot"
+DOMAIN = "smarthomecopilot"
 PLATFORMS = ["sensor"]
 CONFIG_VERSION = 2  # config‑entry version (used by async_migrate_entry)
 INTEGRATION_NAME = "SmartHomeCopilot"
