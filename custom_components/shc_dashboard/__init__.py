@@ -33,7 +33,7 @@ class CopilotSuggestionsView(HomeAssistantView):
 
     url = "/api/SmartHome_Copilot/suggestions"
     name = "SmartHomeCopilotSuggestions"
-    requires_auth = False
+    requires_auth = True
 
     async def get(self, request):
         hass = request.app["hass"]
@@ -61,7 +61,7 @@ class CopilotActionView(HomeAssistantView):
 
     url = "/api/SmartHome_Copilot/{action}/{suggestion_id}"
     name = "SmartHomeCopilotAction"
-    requires_auth = False
+    requires_auth = True
 
     async def post(self, request, action, suggestion_id):
         hass: HomeAssistant = request.app["hass"]
