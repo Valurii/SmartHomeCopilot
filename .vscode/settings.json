@@ -14,5 +14,12 @@
             "localRoot": "${workspaceFolder}",
             "remoteRoot": "/config/custom_components/smarthomecopilot"
         }
+    ],
+    "python-envs.pythonProjects": [
+        {
+            "path": "",
+            "envManager": "ms-python.python:conda",
+            "packageManager": "ms-python.python:conda"
+        }
     ]
 }
