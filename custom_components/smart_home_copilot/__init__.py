@@ -1,12 +1,4 @@
-"""The AI Automation Suggester integration.
-
-To enable remote debugging with VS Code, add the following near startup::
-
-    import debugpy
-    debugpy.listen(("0.0.0.0", 5678))
-
-Then attach using the "Python: Remote Attach" launch configuration.
-"""
+"""The AI Automation Suggester integration."""
 
 import logging
 from homeassistant.config_entries import ConfigEntry
@@ -186,13 +178,3 @@ async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     await async_setup_entry(hass, entry)
 
 
-if __name__ == "__main__":
-    # Enable debugpy for hot-reload when running the module directly
-    import debugpy
-
-    debugpy.listen(("0.0.0.0", 5678))
-    debugpy.wait_for_client()
-
-    from custom_components.SmartHomeCopilot import main
-
-    main()

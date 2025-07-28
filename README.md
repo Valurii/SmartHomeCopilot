@@ -110,8 +110,11 @@ Leveraging the AI Automation Suggester provides several key benefits:
 * **Service Call Integration:** Manually trigger suggestions via the `smart_home_copilot.generate_suggestions` service with full parameter control.
 * **Diagnostics Sensors:** Monitor suggestion status and provider connection health.
 * **Example Automations:** Includes built-in examples for new entity detection and weekly reviews.
-* **Dashboard-Friendly Output:** Sensor attributes provide description and YAML blocks ready for Lovelace cards.
-* **Placeholder Mapping:** When accepting a suggestion, detected placeholders are replaced with the first matching entity and a notification summarizes the mapping.
+  * **Dashboard-Friendly Output:** Sensor attributes provide description and YAML blocks ready for Lovelace cards.
+  * **Placeholder Mapping:** When accepting a suggestion, detected placeholders are replaced with the first matching entity and a notification summarizes the mapping.
+  * **One-click Acceptance:** Accepted suggestions are appended to your `automations.yaml` file and Home Assistant reloads automations automatically.
+  * **Multiple Suggestions:** The integration can store several suggestions at once so you can review or apply them individually.
+  * **Translation Support:** If the snapshot contains mostly non-English text, the AI attempts to translate its response into that language.
 
 ---
 
