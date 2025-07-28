@@ -16,8 +16,10 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install "josepy<2.0.0"
-          pip install homeassistant==2024.6.2 pytest pytest-homeassistant-custom-component pyyaml voluptuous openai anthropic aiohttp
+          pip install "josepy<2.0.0>"
+          pip install homeassistant==2024.6.2
+          pip install -r requirements.txt
+          pip install voluptuous openai anthropic aiohttp
       - name: Validate with hassfest
         uses: home-assistant/actions/hassfest@master
       - name: Run tests
