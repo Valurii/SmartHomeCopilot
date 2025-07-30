@@ -242,6 +242,7 @@ class AIAutomationCoordinator(DataUpdateCoordinator):
                             "title": "Automation Suggestion",
                             "description": description,
                             "yaml": yaml_block.strip(),
+                            "provider": self._opt(CONF_PROVIDER, "unknown"),
                         }
                     )
 
