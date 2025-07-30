@@ -26,6 +26,10 @@ class DummyCoordinator:
     def async_set_updated_data(self, data):
         self.data = data
 
+    async def _async_save_suggestions(self):
+        # No-op for tests
+        pass
+
 
 @pytest.mark.asyncio
 async def test_placeholder_replacement(tmp_path):
