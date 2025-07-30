@@ -21,6 +21,7 @@ from homeassistant.helpers import (
     entity_registry as er,
 )
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.storage import Store
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import (  # noqa: E501
@@ -136,6 +137,7 @@ class AIAutomationCoordinator(DataUpdateCoordinator):
 
         super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=None)
         self.session = async_get_clientsession(hass)
+        self.store = Store(hass, 1, f"{DOMAIN}_suggestions_{entry.entry_id}.json")
 
         self._last_error: str | None = None
 
@@ -151,6 +153,16 @@ class AIAutomationCoordinator(DataUpdateCoordinator):
         self.device_registry: dr.DeviceRegistry | None = None
         self.entity_registry: er.EntityRegistry | None = None
         self.area_registry: ar.AreaRegistry | None = None
+
+    async def _async_load_suggestions(self) -> None:
+        """Load stored suggestions from disk."""
+        stored = await self.store.async_load()
+        if isinstance(stored, dict):
+            self.data.update(stored)
+
+    async def _async_save_suggestions(self) -> None:
+        """Persist current suggestions to disk."""
+        await self.store.async_save(self.data)
 
     # ---------------------------------------------------------------------
     # Utility – options‑first lookup
@@ -185,6 +197,7 @@ class AIAutomationCoordinator(DataUpdateCoordinator):
         self.device_registry = dr.async_get(self.hass)
         self.entity_registry = er.async_get(self.hass)
         self.area_registry = ar.async_get(self.hass)
+        await self._async_load_suggestions()
 
     async def async_shutdown(self):
         """Handle cleanup when the integration is unloaded."""
@@ -226,6 +239,7 @@ class AIAutomationCoordinator(DataUpdateCoordinator):
             )
             if not picked:
                 self.previous_entities = current
+                await self._async_save_suggestions()
                 return self.data
 
             prompt = await self._build_prompt(picked)
@@ -272,12 +286,14 @@ class AIAutomationCoordinator(DataUpdateCoordinator):
                 )
 
             self.previous_entities = current
+            await self._async_save_suggestions()
             return self.data
 
         except Exception as err:  # noqa: BLE001
             self._last_error = str(err)
             _LOGGER.error("Coordinator fatal error: %s", err)
             self.data["last_error"] = self._last_error
+            await self._async_save_suggestions()
             return self.data
 
     # ---------------------------------------------------------------------
