@@ -33,7 +33,7 @@ class CopilotSuggestionsView(HomeAssistantView):
 
     url = "/api/SmartHome_Copilot/suggestions"
     name = "SmartHomeCopilotSuggestions"
-    requires_auth = False
+    requires_auth = True
 
     async def get(self, request):
         hass = request.app["hass"]
@@ -49,6 +49,7 @@ class CopilotSuggestionsView(HomeAssistantView):
                         "shortDescription": sug.get("description"),
                         "detailedDescription": sug.get("description"),
                         "yamlCode": sug.get("yaml"),
+                        "provider": sug.get("provider", data.get("provider")),
                         "showDetails": False,
                     }
                 )
@@ -61,7 +62,7 @@ class CopilotActionView(HomeAssistantView):
 
     url = "/api/SmartHome_Copilot/{action}/{suggestion_id}"
     name = "SmartHomeCopilotAction"
-    requires_auth = False
+    requires_auth = True
 
     async def post(self, request, action, suggestion_id):
         hass: HomeAssistant = request.app["hass"]
@@ -82,12 +83,21 @@ class CopilotActionView(HomeAssistantView):
             placeholders = re.findall(r"<<([^>]+)>>", yaml_block)
             replaced = {}
             for ph in placeholders:
-                domain = ph.lower().split("_")[0]
+                tokens = re.split(r"[ _]+", ph.strip())
+                domain = tokens[0].lower()
+                keywords = [t.lower() for t in tokens[1:]]
                 entities = hass.states.async_entity_ids(domain)
-                if entities:
+                if not entities:
+                    continue
+                replacement = None
+                for ent in entities:
+                    if all(k in ent.lower() for k in keywords):
+                        replacement = ent
+                        break
+                if not replacement:
                     replacement = entities[0]
-                    yaml_block = yaml_block.replace(f"<<{ph}>>", replacement)
-                    replaced[ph] = replacement
+                yaml_block = yaml_block.replace(f"<<{ph}>>", replacement)
+                replaced[ph] = replacement
             try:
                 yaml.safe_load(yaml_block)
             except yaml.YAMLError as err:
@@ -125,5 +135,6 @@ class CopilotActionView(HomeAssistantView):
         suggestions.pop(idx)
         coordinator.data.update({"suggestions": suggestions})
         coordinator.async_set_updated_data(coordinator.data)
+        await coordinator._async_save_suggestions()
 
         return self.json({"success": True})

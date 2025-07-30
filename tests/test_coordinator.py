@@ -101,6 +101,7 @@ async def test_accept_logic_writes_file(tmp_path):
                     "title": "t",
                     "description": "desc",
                     "yaml": "- id: 'a'\n  alias: t\n  trigger: []\n  action: []\n",
+                    "provider": "OpenAI",
                 }
             ]
         }
@@ -111,4 +112,57 @@ async def test_accept_logic_writes_file(tmp_path):
         assert coordinator.data["suggestions"] == []
         content = Path(tmp_path / "automations.yaml").read_text()
         assert "alias: t" in content
+        await hass.async_stop(force=True)
+
+
+@pytest.mark.asyncio
+async def test_placeholder_replacement(tmp_path):
+    kwargs = {
+        (
+            "storage_dir"
+            if "storage_dir" in signature(async_test_home_assistant).parameters
+            else "config_dir"
+        ): str(tmp_path)
+    }
+    with patch("homeassistant.util.dt.get_time_zone", return_value=ZoneInfo("UTC")):
+        async with async_test_home_assistant(**kwargs) as hass:
+            await hass.config.async_set_time_zone("UTC")
+            hass.data.pop(LOADER_CUSTOM, None)
+            entry = MockConfigEntry(
+                domain=DOMAIN,
+                title="Test",
+                data={CONF_PROVIDER: "OpenAI"},
+                options={},
+                version=CONFIG_VERSION,
+            )
+        entry.add_to_hass(hass)
+        coordinator = AIAutomationCoordinator(hass, entry)
+        hass.data[DOMAIN] = {entry.entry_id: coordinator}
+        hass.services.async_register("automation", "reload", lambda call: None)
+
+        hass.states.async_set("light.kitchen_ceiling", "off", {})
+        hass.states.async_set("light.living_room_lamp", "off", {})
+        hass.states.async_set("switch.fan", "off", {})
+
+        yaml_code = (
+            "- id: 'a'\n"
+            "  alias: t\n"
+            "  trigger: []\n"
+            "  action:\n"
+            "  - service: light.turn_on\n"
+            "    target:\n"
+            "      entity_id: <<light_kitchen>>\n"
+            "  - service: switch.turn_on\n"
+            "    target:\n"
+            "      entity_id: <<switch_unknown>>\n"
+        )
+
+        coordinator.data = {"suggestions": [{"title": "t", "description": "d", "yaml": yaml_code}]}
+
+        view = CopilotActionView()
+        req = SimpleNamespace(app={"hass": hass})
+        await view.post(req, "accept", "0")
+        content = Path(tmp_path / "automations.yaml").read_text()
+        assert "light.kitchen_ceiling" in content
+        assert "switch.fan" in content
         await hass.async_stop(force=True)

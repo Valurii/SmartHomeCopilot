@@ -38,6 +38,7 @@ export class SmartHomeCopilotCard extends LitElement {
   `;
   @property({ type: Object }) hass; // Home Assistant object
   @property({ type: Array }) suggestions = [];
+  @property({ type: String }) cardTitle = '';
   @state() loading = true;
   @state() error = null;
 
@@ -51,7 +52,9 @@ export class SmartHomeCopilotCard extends LitElement {
       decline: 'Decline',
       copied: 'YAML code copied to clipboard!',
       fetchError: 'Failed to fetch suggestions.',
-      errorPrefix: 'Error: '
+      errorPrefix: 'Error: ',
+      refresh: 'Refresh',
+      provider: 'Provider'
     },
     de: {
       title: 'KI-Automatisierungsvorschläge',
@@ -62,7 +65,9 @@ export class SmartHomeCopilotCard extends LitElement {
       decline: 'Ablehnen',
       copied: 'YAML-Code in die Zwischenablage kopiert!',
       fetchError: 'Fehler beim Abrufen der Vorschläge.',
-      errorPrefix: 'Fehler: '
+      errorPrefix: 'Fehler: ',
+      refresh: 'Aktualisieren',
+      provider: 'Anbieter'
     }
   };
 
@@ -115,20 +120,22 @@ export class SmartHomeCopilotCard extends LitElement {
     return html`
       <ha-card>
         <div>
-          <h2>${this.strings.title}</h2>
+          <h2>${this.cardTitle || this.strings.title}</h2>
+          <button @click="${() => this.fetchData()}">${this.strings.refresh}</button>
           ${this.loading
             ? html`<p>${this.strings.loading}</p>`
             : this.error
               ? html`<p class="error">${this.strings.errorPrefix}${this.error}</p>`
               : html`
-                  <ul>
-                    ${this.suggestions.map(suggestion => html`
-                      <li>
-                        <h3>${suggestion.title}</h3>
-                        <p>${suggestion.shortDescription}</p>
-                        <button @click="${() => this.toggleDetails(suggestion)}">${this.strings.details}</button>
-                        <div class="details" ?open="${suggestion.showDetails}">
-                          <p>${suggestion.detailedDescription}</p>
+                <ul>
+                  ${this.suggestions.map(suggestion => html`
+                    <li>
+                      <h3>${suggestion.title}</h3>
+                      <p><strong>${this.strings.provider}:</strong> ${suggestion.provider}</p>
+                      <p>${suggestion.shortDescription}</p>
+                      <button @click="${() => this.toggleDetails(suggestion)}">${this.strings.details}</button>
+                      <div class="details" ?open="${suggestion.showDetails}">
+                        <p>${suggestion.detailedDescription}</p>
                           <pre><code class="language-yaml">${suggestion.yamlCode}</code></pre>
                           <button @click="${() => this.copyYaml(suggestion.yamlCode)}">${this.strings.copyYaml}</button>
                           <button @click="${() => this.handleSuggestionAction(suggestion.id, 'accept')}">${this.strings.accept}</button>
@@ -143,7 +150,10 @@ export class SmartHomeCopilotCard extends LitElement {
     `;
   }
   setConfig(config) {
-    // Optional: Handle any configuration options passed to the card
+    if (!config) {
+      throw new Error('Invalid configuration');
+    }
+    this.cardTitle = config.title || '';
   }
   set hass(hass) {
     applyHass(this, hass);

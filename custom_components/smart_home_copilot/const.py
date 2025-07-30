@@ -29,6 +29,9 @@ DEFAULT_TEMPERATURE = 0.7
 # ─────────────────────────────────────────────────────────────
 CONF_PROVIDER = "provider"
 
+# Misc options
+CONF_GERMAN_OUTPUT = "german_output"
+
 # ─────────────────────────────────────────────────────────────
 # Provider‑specific keys
 # ─────────────────────────────────────────────────────────────
