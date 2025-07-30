@@ -34,6 +34,7 @@ from .const import (  # noqa: E501
     CONF_MAX_TOKENS,
     DEFAULT_MAX_TOKENS,
     DEFAULT_TEMPERATURE,
+    CONF_GERMAN_OUTPUT
 )
 
 _LOGGER = logging.getLogger(__name__)
