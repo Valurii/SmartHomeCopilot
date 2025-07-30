@@ -185,7 +185,8 @@
           "openai_azure_api_version": "Versión API de Azure",
           "openai_azure_temperature": "Temperatura (OpenAI Azure)",
           "max_input_tokens": "Máx Tokens de Entrada",
-          "max_output_tokens": "Máx Tokens de Salida"
+          "max_output_tokens": "Máx Tokens de Salida",
+          "german_output": "Salida en alemán"
         },
         "description": "Ajusta la configuración para tus proveedores de IA. Se usarán los campos relevantes para tu proveedor configurado. Configuraciones comunes como los límites de tokens se configuran por proveedor."
       }

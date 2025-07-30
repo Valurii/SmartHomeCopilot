@@ -185,7 +185,8 @@
           "openai_azure_api_version": "Azure API 版本",
           "openai_azure_temperature": "温度 (OpenAI Azure)",
           "max_input_tokens": "最大输入令牌数",
-          "max_output_tokens": "最大输出令牌数"
+          "max_output_tokens": "最大输出令牌数",
+          "german_output": "德语输出"
         },
         "description": "调整您的 AI 提供商的设置。将使用与您配置的提供商相关的字段。通用设置（如令牌限制）将根据每个提供商进行配置。"
       }

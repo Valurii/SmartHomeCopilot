@@ -34,6 +34,7 @@ from .const import (  # noqa: E501
     DEFAULT_MAX_TOKENS,
     DEFAULT_TEMPERATURE,
     DEFAULT_MODELS,
+    CONF_GERMAN_OUTPUT,
     # Provider‑specific keys + endpoints
     CONF_OPENAI_API_KEY,
     CONF_OPENAI_MODEL,
@@ -356,6 +357,8 @@ class AIAutomationCoordinator(DataUpdateCoordinator):
                 "Propose detailed improvements to existing automations and suggest new ones "
                 "that reference only the entity_ids shown above."
             )
+            if self._opt(CONF_GERMAN_OUTPUT, False):
+                builded_prompt += "\nBitte antworte auf Deutsch."
         else:
             autom_sections = self._read_automations_default(MAX_AUTOM, MAX_ATTR)
 
@@ -366,6 +369,9 @@ class AIAutomationCoordinator(DataUpdateCoordinator):
                 f"{''.join(autom_sections) if autom_sections else 'None found.'}\n\n"
                 "Please propose detailed automations and improvements that reference only the entity_ids above."
             )
+
+        if self._opt(CONF_GERMAN_OUTPUT, False):
+            builded_prompt += "\nBitte antworte auf Deutsch."
 
         return builded_prompt
 
