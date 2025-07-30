@@ -82,12 +82,21 @@ class CopilotActionView(HomeAssistantView):
             placeholders = re.findall(r"<<([^>]+)>>", yaml_block)
             replaced = {}
             for ph in placeholders:
-                domain = ph.lower().split("_")[0]
+                tokens = re.split(r"[ _]+", ph.strip())
+                domain = tokens[0].lower()
+                keywords = [t.lower() for t in tokens[1:]]
                 entities = hass.states.async_entity_ids(domain)
-                if entities:
+                if not entities:
+                    continue
+                replacement = None
+                for ent in entities:
+                    if all(k in ent.lower() for k in keywords):
+                        replacement = ent
+                        break
+                if not replacement:
                     replacement = entities[0]
-                    yaml_block = yaml_block.replace(f"<<{ph}>>", replacement)
-                    replaced[ph] = replacement
+                yaml_block = yaml_block.replace(f"<<{ph}>>", replacement)
+                replaced[ph] = replacement
             try:
                 yaml.safe_load(yaml_block)
             except yaml.YAMLError as err:
