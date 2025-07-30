@@ -23,6 +23,7 @@ from .const import (  # noqa: E501  (long import list)
     DEFAULT_MAX_INPUT_TOKENS,
     DEFAULT_MAX_OUTPUT_TOKENS,
     DEFAULT_MODELS,
+    CONF_GERMAN_OUTPUT,
     # Provider‑specific
     CONF_OPENAI_API_KEY,
     CONF_OPENAI_MODEL,
@@ -684,6 +685,10 @@ class AIAutomationOptionsFlowHandler(config_entries.OptionsFlow):
                     CONF_MAX_OUTPUT_TOKENS, DEFAULT_MAX_OUTPUT_TOKENS
                 ),
             ): vol.All(vol.Coerce(int), vol.Range(min=100)),
+            vol.Optional(
+                CONF_GERMAN_OUTPUT,
+                default=self._get_option(CONF_GERMAN_OUTPUT, False),
+            ): bool,
         }
 
         # provider‑specific editable fields
