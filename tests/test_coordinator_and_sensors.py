@@ -145,7 +145,7 @@ async def test_sensor_updates():
         now = datetime.now()
         new_data = {
             "suggestions": [
-                {"title": "t", "description": "desc", "yaml": "yaml"}
+                {"title": "t", "description": "desc", "yaml": "yaml", "provider": "OpenAI"}
             ],
             "last_update": now,
             "entities_processed": ["sensor.test"],

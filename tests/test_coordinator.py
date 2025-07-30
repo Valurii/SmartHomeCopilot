@@ -101,6 +101,7 @@ async def test_accept_logic_writes_file(tmp_path):
                     "title": "t",
                     "description": "desc",
                     "yaml": "- id: 'a'\n  alias: t\n  trigger: []\n  action: []\n",
+                    "provider": "OpenAI",
                 }
             ]
         }

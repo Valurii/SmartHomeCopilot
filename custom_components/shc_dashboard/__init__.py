@@ -49,6 +49,7 @@ class CopilotSuggestionsView(HomeAssistantView):
                         "shortDescription": sug.get("description"),
                         "detailedDescription": sug.get("description"),
                         "yamlCode": sug.get("yaml"),
+                        "provider": sug.get("provider", data.get("provider")),
                         "showDetails": False,
                     }
                 )
