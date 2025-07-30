@@ -125,5 +125,6 @@ class CopilotActionView(HomeAssistantView):
         suggestions.pop(idx)
         coordinator.data.update({"suggestions": suggestions})
         coordinator.async_set_updated_data(coordinator.data)
+        await coordinator._async_save_suggestions()
 
         return self.json({"success": True})
