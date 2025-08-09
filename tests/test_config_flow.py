@@ -10,6 +10,13 @@ from pytest_homeassistant_custom_component.common import (
     async_test_home_assistant,
 )
 
+import threading
+
+def teardown_module(module):
+    for thread in threading.enumerate():
+        if thread.name.startswith("Thread-3 (_run_safe_shutdown_loop)") and thread.is_alive():
+            thread.join(timeout=1)
+            
 sys.path.append(str(Path(__file__).resolve().parents[1] / "custom_components"))
 
 from smart_home_copilot.const import (
