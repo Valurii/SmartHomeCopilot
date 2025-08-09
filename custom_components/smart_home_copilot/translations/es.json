@@ -1,5 +1,5 @@
 {
-  "title": "Sugeridor de Automatizaciones con IA",
+  "title": "Smart Home Copilot",
   "config": {
     "step": {
       "user": {
@@ -140,7 +140,7 @@
   "options": {
     "step": {
       "init": {
-        "title": "Opciones del Sugeridor de Automatizaciones con IA",
+        "title": "Opciones de Smart Home Copilot",
         "data": {
           "openai_api_key": "Clave API de OpenAI",
           "openai_model": "Modelo OpenAI",

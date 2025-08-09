@@ -1,4 +1,4 @@
-"""The AI Automation Suggester integration."""
+"""The Smart Home Copilot integration."""
 
 import logging
 from homeassistant.config_entries import ConfigEntry
@@ -44,7 +44,7 @@ async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry) ->
 
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
-    """Set up the AI Automation Suggester component."""
+    """Set up the Smart Home Copilot component."""
     hass.data.setdefault(DOMAIN, {})
 
     async def handle_generate_suggestions(call: ServiceCall) -> None:
@@ -76,7 +76,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
             if coordinator is None:
                 raise ServiceValidationError(
-                    "No AI Automation Suggester provider configured"
+                    "No Smart Home Copilot provider configured"
                 )
 
             if custom_prompt:
@@ -116,7 +116,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up AI Automation Suggester from a config entry."""
+    """Set up Smart Home Copilot from a config entry."""
     try:
         if CONF_PROVIDER not in entry.data:
             raise ConfigEntryNotReady("Provider not specified in config")
@@ -176,5 +176,3 @@ async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Reload config entry."""
     await async_unload_entry(hass, entry)
     await async_setup_entry(hass, entry)
-
-

@@ -1,4 +1,4 @@
-# AI Automation Suggester
+# Smart Home Copilot
 
 An AI-powered Home Assistant custom integration that suggests automations based on your entities. The Ultimate "Matt" mode.
 
@@ -16,7 +16,7 @@ An AI-powered Home Assistant custom integration that suggests automations based 
 2. Copy the `SmartHome-Copilot-card.js` file to `www/SmartHome_Copilot/` directory.
 3. Restart Home Assistant.
 4. In Home Assistant, navigate to **Configuration** > **Integrations**.
-5. Click the **Add Integration** button and search for **AI Suggester**.
+5. Click the **Add Integration** button and search for **Smart Home Copilot**.
 6. Follow the configuration wizard to set up the integration.
 
 ## Configuration
@@ -28,7 +28,7 @@ An AI-powered Home Assistant custom integration that suggests automations based 
 
 - After installation, the integration will scan for entities based on the configured frequency.
 - When new suggestions are available, a persistent notification will appear.
-- Add the **AI Suggester Card** to your Lovelace dashboard to view suggestions.
+- Add the **Smart Home Copilot Card** to your Lovelace dashboard to view suggestions.
 
 
 ## Adding the Lovelace Card

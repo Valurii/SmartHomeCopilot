@@ -1,5 +1,5 @@
 # custom_components/smart_home_copilot/config_flow.py
-"""Config flow for AI Automation Suggester."""
+"""Config flow for Smart Home Copilot."""
 from __future__ import annotations
 
 import os
@@ -339,7 +339,7 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             "openai",
             vol.Schema(schema),
             lambda ui: self.validator.validate_openai(ui[CONF_OPENAI_API_KEY]),
-            "AI Automation Suggester (OpenAI)",
+            "Smart Home Copilot (OpenAI)",
             {},
             {},
             user_input,
@@ -369,7 +369,7 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             "anthropic",
             vol.Schema(schema),
             _v,
-            "AI Automation Suggester (Anthropic)",
+            "Smart Home Copilot (Anthropic)",
             {},
             {},
             user_input,
@@ -397,7 +397,7 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             "google",
             vol.Schema(schema),
             _v,
-            "AI Automation Suggester (Google)",
+            "Smart Home Copilot (Google)",
             {},
             {},
             user_input,
@@ -419,7 +419,7 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             "groq",
             vol.Schema(schema),
             lambda ui: self.validator.validate_groq(ui[CONF_GROQ_API_KEY]),
-            "AI Automation Suggester (Groq)",
+            "Smart Home Copilot (Groq)",
             {},
             {},
             user_input,
@@ -447,7 +447,7 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             "localai",
             vol.Schema(schema),
             _v,
-            "AI Automation Suggester (LocalAI)",
+            "Smart Home Copilot (LocalAI)",
             {},
             {},
             user_input,
@@ -474,7 +474,7 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             "ollama",
             vol.Schema(schema),
             _v,
-            "AI Automation Suggester (Ollama)",
+            "Smart Home Copilot (Ollama)",
             {},
             {},
             user_input,
@@ -504,7 +504,7 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             "custom_openai",
             vol.Schema(schema),
             _v,
-            "AI Automation Suggester (Custom OpenAI)",
+            "Smart Home Copilot (Custom OpenAI)",
             {},
             {},
             user_input,
@@ -515,7 +515,7 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input:
             self.data.update(user_input)
             return self.async_create_entry(
-                title="AI Automation Suggester (Mistral AI)", data=self.data
+                title="Smart Home Copilot (Mistral AI)", data=self.data
             )
 
         schema = {
@@ -555,7 +555,7 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             "perplexity",
             vol.Schema(schema),
             _v,
-            "AI Automation Suggester (Perplexity)",
+            "Smart Home Copilot (Perplexity)",
             {},
             {},
             user_input,
@@ -588,7 +588,7 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             "openrouter",
             vol.Schema(schema),
             _v,
-            "AI Automation Suggester (OpenRouter)",
+            "Smart Home Copilot (OpenRouter)",
             {},
             {},
             user_input,
@@ -628,7 +628,7 @@ class AIAutomationConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             "openai_azure",
             vol.Schema(schema),
             _v,
-            "AI Automation Suggester (OpenAI Azure)",
+            "Smart Home Copilot (OpenAI Azure)",
             {},
             {},
             user_input,

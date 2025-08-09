@@ -1,5 +1,5 @@
 # custom_components/smart_home_copilot/coordinator.py
-"""Coordinator for AI Automation Suggester."""
+"""Coordinator for Smart Home Copilot."""
 
 from __future__ import annotations
 
@@ -34,7 +34,7 @@ from .const import (  # noqa: E501
     CONF_MAX_TOKENS,
     DEFAULT_MAX_TOKENS,
     DEFAULT_TEMPERATURE,
-    CONF_GERMAN_OUTPUT
+    CONF_GERMAN_OUTPUT,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -416,7 +416,10 @@ class AIAutomationCoordinator(DataUpdateCoordinator):
             provider_cls = PROVIDERS.get(provider_name)
             if provider_cls is None:
                 raise KeyError(provider_name)
-            if not hasattr(self, "_provider") or self._provider.__class__ is not provider_cls:
+            if (
+                not hasattr(self, "_provider")
+                or self._provider.__class__ is not provider_cls
+            ):
                 self._provider = provider_cls(self)
             return await self._provider.generate(prompt)
         except KeyError:
@@ -427,4 +430,3 @@ class AIAutomationCoordinator(DataUpdateCoordinator):
             self._last_error = str(err)
             _LOGGER.error("Dispatch error: %s", err)
             return None
-

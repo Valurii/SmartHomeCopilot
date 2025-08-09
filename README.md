@@ -4,7 +4,7 @@
   </a>
 </p>
 
-# AI Automation Suggester
+# Smart Home Copilot
 
 [![Validate with hassfest](https://img.shields.io/github/actions/workflow/status/fjoelnr/SmartHomeCopilot/hassfest.yaml?style=for-the-badge)](https://github.com/fjoelnr/SmartHomeCopilot)
 [![HACS Validation](https://img.shields.io/github/actions/workflow/status/fjoelnr/SmartHomeCopilot/validate.yaml?style=for-the-badge)](https://github.com/fjoelnr/SmartHomeCopilot)
@@ -30,7 +30,7 @@ The result is often an **under-automated house** despite having powerful hardwar
 
 ### The Fix – Your Personal Automation Copilot
 
-The AI Automation Suggester integration solves these challenges by acting as a personal automation consultant. It intelligently analyzes your Home Assistant instance to:
+The Smart Home Copilot integration solves these challenges by acting as a personal automation consultant. It intelligently analyzes your Home Assistant instance to:
 
 1.  **Analyze your home's state:** Understand your devices, their capabilities, locations, and existing automations.
 2.  **Identify opportunities:** Spot gaps, synergies, and potential improvements for energy saving, security, comfort, and convenience.
@@ -83,7 +83,7 @@ Here's an example of displaying suggestions on a dashboard:
 
 ## 🏆 Benefits
 
-Leveraging the AI Automation Suggester provides several key benefits:
+Leveraging the Smart Home Copilot provides several key benefits:
 
 * **Time Saving:** Reduces the effort and guesswork involved in designing complex automations.
 * **Context-Aware Suggestions:** Ideas consider your specific devices, areas, and current setup for realistic, tailored recommendations.
@@ -133,10 +133,10 @@ Leveraging the AI Automation Suggester provides several key benefits:
 
 1.  **Install HACS** if you haven't already.
 2.  In HACS → **Integrations**, click the `+` button.
-3.  Search for `AI Automation Suggester`.
+3.  Search for `Smart Home Copilot`.
 4.  Select the integration and click **Download**.
 5.  **Restart Home Assistant**.
-6.  Go to Settings → Devices & Services → **+ Add Integration** and search for `AI Automation Suggester`.
+6.  Go to Settings → Devices & Services → **+ Add Integration** and search for `Smart Home Copilot`.
 
 ### Manual Installation
 
@@ -150,13 +150,13 @@ Leveraging the AI Automation Suggester provides several key benefits:
             └── ... (other files)
     ```
 3.  **Restart Home Assistant**.
-4.  Go to Settings → Devices & Services → **+ Add Integration** and search for `AI Automation Suggester`.
+4.  Go to Settings → Devices & Services → **+ Add Integration** and search for `Smart Home Copilot`.
 
 ---
 
 ## ⚙️ Configuration
 
-1.  Add the integration via the Home Assistant UI: Settings → Devices & Services → **+ Add Integration** → `AI Automation Suggester`.
+1.  Add the integration via the Home Assistant UI: Settings → Devices & Services → **+ Add Integration** → `Smart Home Copilot`.
 2.  Follow the setup wizard:
     * **Select your AI Provider:** Choose from the dropdown list.
     * **Enter API Keys or Endpoint:** Provide the necessary credentials or local server URL based on your provider choice.
@@ -492,4 +492,4 @@ The quality of suggestions in other languages depends heavily on the AI model us
 
 ---
 
-With the AI Automation Suggester, you gain an AI-powered ally to help you unlock your home’s full potential. Instead of being overwhelmed by possibilities, receive thoughtful, context-aware suggestions that make your Home Assistant automations more impactful, efficient, and enjoyable.
+With the Smart Home Copilot, you gain an AI-powered ally to help you unlock your home’s full potential. Instead of being overwhelmed by possibilities, receive thoughtful, context-aware suggestions that make your Home Assistant automations more impactful, efficient, and enjoyable.

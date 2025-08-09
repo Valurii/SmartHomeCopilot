@@ -1,7 +1,7 @@
 ########################################################################################
-# AI Suggestions - New Entity Detection
+# Smart Home Copilot - New Entity Detection
 ########################################################################################
-# This automation triggers the AI Automation Suggester whenever new entities are added to
+# This automation triggers Smart Home Copilot whenever new entities are added to
 # your Home Assistant instance.
 #
 # CUSTOMIZATION OPTIONS:
@@ -14,7 +14,7 @@
 #    - Adjust the hours value in the condition template if needed
 ########################################################################################
 
-alias: "AI Suggestions - New Entity Detection"
+alias: "Smart Home Copilot - New Entity Detection"
 description: "Generates automation suggestions whenever new entities are registered in Home Assistant"
 
 trigger:
@@ -44,4 +44,5 @@ condition:
 
 action:
   - service: smart_home_copilot.generate_suggestions
-    target: {}    data: {}
+    target: {}
+    data: {}

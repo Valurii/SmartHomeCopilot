@@ -1,5 +1,5 @@
 # custom_components/smart_home_copilot/sensor.py
-"""Sensor platform for AI Automation Suggester."""
+"""Sensor platform for Smart Home Copilot."""
 
 from __future__ import annotations
 
@@ -119,7 +119,7 @@ async def async_setup_entry(
     entry: ConfigEntry,
     async_add_entities: AddEntitiesCallback,
 ) -> None:
-    """Set up AI Automation Suggester sensors from a config entry."""
+    """Set up Smart Home Copilot sensors from a config entry."""
     coordinator = cast(DataUpdateCoordinator, hass.data[DOMAIN][entry.entry_id])
     provider_name = entry.data.get(CONF_PROVIDER, "Unknown Provider")
 
@@ -167,7 +167,7 @@ async def async_setup_entry(
 # Base sensor
 # ─────────────────────────────────────────────────────────────
 class AIBaseSensor(CoordinatorEntity[DataUpdateCoordinator], SensorEntity):
-    """Base class for AI Automation Suggester sensors."""
+    """Base class for Smart Home Copilot sensors."""
 
     def __init__(
         self,

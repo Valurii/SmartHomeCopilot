@@ -1,5 +1,5 @@
 {
-  "title": "AI Automatisering Suggester",
+  "title": "Smart Home Copilot",
   "config": {
     "step": {
       "user": {
@@ -140,7 +140,7 @@
   "options": {
     "step": {
       "init": {
-        "title": "AI Automatisering Suggester Opties",
+        "title": "Smart Home Copilot Opties",
         "data": {
           "openai_api_key": "OpenAI API-sleutel",
           "openai_model": "OpenAI Model",

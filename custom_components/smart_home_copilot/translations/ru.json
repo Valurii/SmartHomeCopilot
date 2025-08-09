@@ -1,5 +1,5 @@
 {
-  "title": "Советчик Автоматизаций с ИИ",
+  "title": "Smart Home Copilot",
   "config": {
     "step": {
       "user": {
@@ -140,7 +140,7 @@
   "options": {
     "step": {
       "init": {
-        "title": "Настройки Советчика Автоматизаций с ИИ",
+        "title": "Настройки Smart Home Copilot",
         "data": {
           "openai_api_key": "Ключ API OpenAI",
           "openai_model": "Модель OpenAI",

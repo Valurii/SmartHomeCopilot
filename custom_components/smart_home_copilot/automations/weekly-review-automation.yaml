@@ -1,5 +1,5 @@
 ########################################################################################
-# AI Suggestions - Weekly System Review
+# Smart Home Copilot - Weekly System Review
 ########################################################################################
 # This automation performs a comprehensive weekly review of your Home Assistant setup
 # to suggest new automation opportunities and improvements.
@@ -11,7 +11,7 @@
 #    - Change the weekday condition to run on different days
 ########################################################################################
 
-alias: "AI Suggestions - Weekly Review"
+alias: "Smart Home Copilot - Weekly Review"
 description: "Performs a weekly scan of all entities to suggest new automation opportunities"
 
 trigger:
@@ -35,5 +35,5 @@ action:
   - service: persistent_notification.create
     data:
       title: "Weekly Automation Review"
-      message: "The AI Automation Suggester has completed its weekly review. Check the suggestions sensor for new automation ideas!"
+      message: "Smart Home Copilot has completed its weekly review. Check the suggestions sensor for new automation ideas!"
       notification_id: "weekly_automation_review"
