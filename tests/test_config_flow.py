@@ -16,7 +16,7 @@ def teardown_module(module):
     for thread in threading.enumerate():
         if thread.name.startswith("Thread-3 (_run_safe_shutdown_loop)") and thread.is_alive():
             thread.join(timeout=1)
-            
+
 sys.path.append(str(Path(__file__).resolve().parents[1] / "custom_components"))
 
 from smart_home_copilot.const import (
@@ -56,4 +56,7 @@ async def test_config_flow_creates_entry(tmp_path):
                 )
     assert result["type"] == "create_entry"
     await hass.async_stop(force=True)
+    for thread in threading.enumerate():
+        if thread.name.startswith("Thread-3 (_run_safe_shutdown_loop)") and thread.is_alive():
+            thread.join(timeout=1)
 
