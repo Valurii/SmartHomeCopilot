@@ -50,3 +50,10 @@ async def test_config_flow_creates_entry(tmp_path):
     assert result["type"] == "create_entry"
     await hass.async_stop(force=True)
 
+
+@pytest.fixture(autouse=True)
+def cleanup_shutdown_thread():
+    yield
+    for thread in threading.enumerate():
+        if thread.name == "_run_safe_shutdown_loop" and thread.is_alive():
+            thread.join(timeout=5)
