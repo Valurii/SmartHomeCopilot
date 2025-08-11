@@ -3,7 +3,7 @@ from pathlib import Path
 from inspect import signature
 from unittest.mock import patch
 from zoneinfo import ZoneInfo
-
+import threading
 import pytest
 from homeassistant.loader import DATA_CUSTOM_COMPONENTS as LOADER_CUSTOM
 from pytest_homeassistant_custom_component.common import (
