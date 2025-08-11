@@ -2,3 +2,4 @@ pytest
 pytest-cov>=2.10.1
 pytest-homeassistant-custom-component
 pyyaml
+aiohttp==3.9.5
