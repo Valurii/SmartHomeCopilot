@@ -52,8 +52,8 @@ async def test_config_flow_creates_entry(tmp_path):
 
 
 @pytest.fixture(autouse=True)
-def cleanup_shutdown_thread():
+def cleanup_shutdown_threads():
     yield
     for thread in threading.enumerate():
-        if thread.name == "_run_safe_shutdown_loop" and thread.is_alive():
-            thread.join(timeout=5)
+        if "_run_safe_shutdown_loop" in thread.name and thread.is_alive():
+            thread.join(timeout=10)  # Increase timeout if needed
