@@ -1,495 +1,165 @@
 <p align="center">
   <a href="https://coff.ee/fjoelnir" target="_blank">
-    <img src="https://img.shields.io/badge/Buy&nbsp;me&nbsp;a&nbsp;coffee-Support&nbsp;Dev-yellow?style=for-the-badge&logo=buy-me-a-coffee" alt="Buy Me A Coffee">
+    <img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-Support%20Dev-yellow?style=for-the-badge&logo=buy-me-a-coffee" alt="Buy Me A Coffee">
   </a>
 </p>
 
-# AI Automation Suggester
+# SmartHomeCopilot
 
-[![Validate with hassfest](https://img.shields.io/github/actions/workflow/status/fjoelnr/SmartHomeCopilot/hassfest.yaml?style=for-the-badge)](https://github.com/fjoelnr/SmartHomeCopilot)
-[![HACS Validation](https://img.shields.io/github/actions/workflow/status/fjoelnr/SmartHomeCopilot/validate.yaml?style=for-the-badge)](https://github.com/fjoelnr/SmartHomeCopilot)
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/fjoelnr/SmartHomeCopilot?style=for-the-badge)](https://github.com/fjoelnr/SmartHomeCopilot)
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://github.com/fjoelnr/SmartHomeCopilot)
+[![Validate with hassfest](https://img.shields.io/github/actions/workflow/status/Valurii/SmartHomeCopilot/hassfest.yaml?style=for-the-badge)](https://github.com/Valurii/SmartHomeCopilot)
+[![HACS Validation](https://img.shields.io/github/actions/workflow/status/Valurii/SmartHomeCopilot/validate.yaml?style=for-the-badge)](https://github.com/Valurii/SmartHomeCopilot)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/Valurii/SmartHomeCopilot?style=for-the-badge)](https://github.com/Valurii/SmartHomeCopilot/releases)
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://github.com/Valurii/SmartHomeCopilot)
 
-Inspired by the original project from ITSpecialist111.
+`SmartHomeCopilot` is a Home Assistant custom integration that analyzes your current smart-home setup and proposes actionable automation YAML with the help of cloud or local LLM providers.
 
-An **AI‑powered assistant** for Home Assistant that leverages large language models to understand your unique smart home environment – your entities, areas, devices, **and** existing automations. It proposes intelligent, actionable YAML suggestions tailored to your specific setup, helping you unlock your home's full potential.
+It is designed as a review-first copilot: suggestions are generated against your real entities, areas, devices, and existing automations, but nothing is applied automatically without your explicit decision.
 
----
+## What It Does
 
-## ✨ Why does this exist? (Purpose and Problem Statement)
+- snapshots your Home Assistant context
+- builds a provider-specific AI prompt from entities, devices, areas, and automations
+- returns human-readable suggestions plus ready-to-review YAML
+- exposes results through sensors and persistent notifications
+- supports accepting suggestions into `automations.yaml`
+- supports cloud and local providers including OpenAI, Anthropic, Google, Groq, LocalAI, Ollama, Mistral, Perplexity, and OpenRouter
 
-As your Home Assistant setup grows, managing its complexity and identifying new opportunities for automation can become challenging. You might find yourself with:
+## Repository Status
 
-* **Too many possibilities:** Every new device adds countless potential interactions.
-* **Automation "Writer's Block":** Translating a complex idea into functional YAML can be daunting.
-* **Underutilized Potential:** Many devices sit idle or require manual control because the right automation hasn't been thought of or created.
-* **Maintenance Overload:** Keeping existing automations relevant as your home evolves is difficult.
+- active public integration repository
+- default branch: `develop`
+- maintained by `@fjoelnr` with `@ha-llm-bot` as contributor/reviewer
 
-The result is often an **under-automated house** despite having powerful hardware.
+Further maintainer context:
 
-### The Fix – Your Personal Automation Copilot
+- [docs/STATUS.md](docs/STATUS.md)
+- [docs/OPERATIONS.md](docs/OPERATIONS.md)
+- [AGENTS.md](AGENTS.md)
 
-The AI Automation Suggester integration solves these challenges by acting as a personal automation consultant. It intelligently analyzes your Home Assistant instance to:
+## How It Works
 
-1.  **Analyze your home's state:** Understand your devices, their capabilities, locations, and existing automations.
-2.  **Identify opportunities:** Spot gaps, synergies, and potential improvements for energy saving, security, comfort, and convenience.
-3.  **Draft ready-to-paste YAML:** Provide concrete, tailored automation ideas as YAML snippets you can review, tweak, and implement directly.
+1. The integration collects a scoped snapshot of your Home Assistant environment.
+2. It sends that snapshot to the configured AI provider.
+3. The provider response is parsed into human-readable description text and YAML suggestions.
+4. Suggestions are surfaced through sensors, notifications, and optional dashboard cards.
+5. You review, adjust, and optionally accept the automation.
 
-**In essence,** this integration turns the complexity of a large Home Assistant environment into actionable insights and tangible benefits, guiding you toward a more efficient, comfortable, and secure smart home.
-
----
-
-## 🚀 How It Works (The Solution)
-
-The integration follows a simple, effective process:
-
-| Step | What happens? | Details |
-|------|---------------|---------|
-| **1&nbsp;· Snapshot** | Collects data about your home. | On manual trigger or schedule, the integration gathers information on your entities (including attributes), devices, areas, **and** existing automations. You can control the scope using filters and limits. |
-| **2&nbsp;· Prompt Building** | Structures the data for the AI. | This snapshot is embedded into a detailed system prompt describing your specific Home Assistant setup. You can enhance this with a *custom prompt* to steer suggestions towards specific goals (e.g., "focus on presence lighting"). |
-| **3&nbsp;· Provider Call** | Sends the prompt to the AI. | The crafted prompt is sent to your configured AI provider (OpenAI, Anthropic, Google, Groq, LocalAI, Ollama, Mistral, Perplexity). |
-| **4&nbsp;· Parsing** | Processes the AI's response. | The raw response from the AI is parsed to extract key information: a human-readable `description` of the suggestion, the actual `yaml_block` code, and potentially other details. This information is stored on sensor attributes. |
-| **5&nbsp;· Surface** | Delivers the suggestions. | Suggestions appear as Home Assistant persistent notifications. You can also use sensor attributes to display suggestions on custom dashboards for easy review and implementation. |
-
-Randomized entity selection (configurable) helps ensure each analysis run can surface fresh ideas rather than repeating the same suggestions.
-
----
-
-## 📸 What to Expect (Screenshots)
-
-Suggestions are delivered directly within Home Assistant notifications:
+## Screenshots
 
 <p align="center">
- <img src="images/Screenshot/Screenshot%202025-01-19%20082247-1.png" alt="Notification example" width="700"/>
-  <br><em>AI suggestions delivered right inside Home&nbsp;Assistant</em>
+  <img src="images/Screenshot/Screenshot%202025-01-19%20082247-1.png" alt="Notification example" width="700" />
+  <br><em>Suggestions delivered directly inside Home Assistant</em>
 </p>
-
-You can also build custom dashboard cards to display suggestions using sensor attributes:
 
 <p align="center">
- <img src="images/Screenshot/Screenshot%202025-01-19%20083200.png" alt="Dashboard card example" width="700"/>
-  <br><em>Dashboard showing human-readable description and extracted YAML block</em>
+  <img src="images/Screenshot/Screenshot%202025-01-19%20083200.png" alt="Dashboard example" width="700" />
+  <br><em>Dashboard surfacing both summary text and YAML suggestion content</em>
 </p>
 
-Here's an example of displaying suggestions on a dashboard:
+## Installation
 
-<p align="center">
- <img src="images/Screenshot/Screenshot%202025-01-19%20083200.png" alt="Example Dashboard Implementation" width="700"/>
-  <br><em>Example of a dashboard displaying AI-suggested automations</em>
-</p>
+### HACS
 
----
+1. Open HACS.
+2. Add or search for `SmartHomeCopilot`.
+3. Download the integration.
+4. Restart Home Assistant.
+5. Add the integration from `Settings -> Devices & Services`.
 
-## 🏆 Benefits
+### Manual
 
-Leveraging the AI Automation Suggester provides several key benefits:
+1. Copy `custom_components/smart_home_copilot/` into your Home Assistant `custom_components/` directory.
+2. Restart Home Assistant.
+3. Add the integration from `Settings -> Devices & Services`.
 
-* **Time Saving:** Reduces the effort and guesswork involved in designing complex automations.
-* **Context-Aware Suggestions:** Ideas consider your specific devices, areas, and current setup for realistic, tailored recommendations.
-* **Model-Agnostic Flexibility:** Supports cloud and local AI models, letting you choose based on cost, privacy, and performance preferences.
-* **Improved Usability:** Makes automation creation more accessible, even for users less familiar with YAML.
-* **Dynamic Inspiration:** Provides fresh ideas as your home and devices change, keeping your automations evolving.
-* **Enhanced Control:** Custom prompts, entity limits, and domain filters give you command over the suggestion generation process.
-* **Safe to Try:** Suggestions are presented for review; nothing is automatically implemented without your explicit action.
+If you use the dashboard card assets, also deploy the assets from `custom_components/shc_dashboard/` into your Home Assistant frontend path as needed.
 
----
+## Configuration
 
-## 📦 Features
+The config flow supports provider-specific credentials and settings, including:
 
-* **Multi-Provider Support:** Connect to OpenAI, OpenAI Azure, Anthropic, Google, Groq, LocalAI, Ollama, Mistral, Perplexity, or OpenRouter with full configuration options:
-    * Temperature control for all providers (0.0 - 2.0)
-    * Model selection with provider-specific defaults
-    * Secure API key storage
-    * Custom endpoints for compatible providers
-    * Advanced options like Ollama's think mode control
-* **Customizable Prompts and Filters:** Tailor suggestions using system prompts, domain filters, and entity limits.
-* **Randomized Entity Selection:** Prevent repetitive suggestions and discover new opportunities.
-* **Context-Rich Insights:** Incorporates device and area information for smarter, more relevant ideas.
-* **Persistent Notifications:** Receive suggestions directly in your Home Assistant interface.
-* **Service Call Integration:** Manually trigger suggestions via the `smart_home_copilot.generate_suggestions` service with full parameter control.
-* **Diagnostics Sensors:** Monitor suggestion status and provider connection health.
-* **Example Automations:** Includes built-in examples for new entity detection and weekly reviews.
-  * **Dashboard-Friendly Output:** Sensor attributes provide description and YAML blocks ready for Lovelace cards.
-  * **Placeholder Mapping:** When accepting a suggestion, detected placeholders are replaced with the first matching entity and a notification summarizes the mapping.
-  * **One-click Acceptance:** Accepted suggestions are appended to your `automations.yaml` file and Home Assistant reloads automations automatically.
-  * **Multiple Suggestions:** The integration can store several suggestions at once so you can review or apply them individually.
-  * **Translation Support:** If the snapshot contains mostly non-English text, the AI attempts to translate its response into that language.
+- provider selection
+- model selection
+- API keys or local endpoint URLs
+- max token settings
+- temperature
+- optional custom system prompts
 
----
+For containerized setups you can inject secrets via environment variables and reference them from Home Assistant configuration.
 
-## 🛠️ Prerequisites
-
-* **Home Assistant:** Version 2023.5 or later.
-* **AI Provider Setup:** You will need access to an AI model.
-    * For cloud providers (OpenAI, Anthropic, Google, Groq, Mistral, Perplexity), you’ll need API keys.
-    * For local models (LocalAI, Ollama), ensure the local servers are running and accessible from Home Assistant.
-
----
-
-## ⬇️ Installation
-
-### HACS (Recommended)
-
-1.  **Install HACS** if you haven't already.
-2.  In HACS → **Integrations**, click the `+` button.
-3.  Search for `AI Automation Suggester`.
-4.  Select the integration and click **Download**.
-5.  **Restart Home Assistant**.
-6.  Go to Settings → Devices & Services → **+ Add Integration** and search for `AI Automation Suggester`.
-
-### Manual Installation
-
-1.  **Download** the contents of this repository.
-2.  **Copy** the `custom_components/smarthomecopilot` folder to your Home Assistant `custom_components` directory.
-    ```bash
-    <homeassistant_config_dir>/
-    └── custom_components/
-        └── SmartHomeCopilot/
-            ├── __init__.py
-            └── ... (other files)
-    ```
-3.  **Restart Home Assistant**.
-4.  Go to Settings → Devices & Services → **+ Add Integration** and search for `AI Automation Suggester`.
-
----
-
-## ⚙️ Configuration
-
-1.  Add the integration via the Home Assistant UI: Settings → Devices & Services → **+ Add Integration** → `AI Automation Suggester`.
-2.  Follow the setup wizard:
-    * **Select your AI Provider:** Choose from the dropdown list.
-    * **Enter API Keys or Endpoint:** Provide the necessary credentials or local server URL based on your provider choice.
-    * **Select Model:** Choose the specific model variant you wish to use.
-    * **Set Max Tokens:** Define the maximum length for the AI's response (influences the length of suggestions).
-    * **(Optional) Custom System Prompt:** Provide an initial prompt to guide the AI's overall perspective (e.g., "You are an expert in energy-saving automations for smart homes.").
-
-You can adjust these settings later via the integration options in Settings → Devices & Services.
-
-## 🐳 Docker Environment Variables
-
-When running Home Assistant in Docker you can provide credentials for this integration through environment variables. Set `OPENAI_API_KEY` when using OpenAI and `OLLAMA_URL` for local models like Ollama. Your docker-compose service might look like:
-
-```yaml
-services:
-  homeassistant:
-    image: ghcr.io/home-assistant/home-assistant:stable
-    environment:
-      OPENAI_API_KEY: "your-openai-key"
-      OLLAMA_URL: "http://ollama:11434"
-```
-
-Reference these variables in `configuration.yaml` so Home Assistant loads them at start up:
+Example:
 
 ```yaml
 smart_home_copilot:
-openai_api_key: !env_var OPENAI_API_KEY
+  openai_api_key: !env_var OPENAI_API_KEY
   ollama_url: !env_var OLLAMA_URL
 ```
 
-Removing one of these variables disables that provider, letting you run purely local or cloud based models.
+Alternative secret file flow:
 
-When these environment variables are present, the integration setup form automatically pre-fills the corresponding API key fields so credentials never need to be typed into the UI.
+- copy `credentials.yaml.example` to `credentials.yaml`
+- keep it out of version control
+- mount it into the Home Assistant container if needed
 
-### `credentials.yaml`
+## Service and Output Surface
 
-As an alternative to environment variables you can keep your API keys in a file. Copy `credentials.yaml.example` to `credentials.yaml` and enter your secrets there. The file is ignored by Git so your keys stay private. When using Docker, mount this file into the container:
+Main service:
 
-```yaml
-services:
-  homeassistant:
-    volumes:
-      - ./credentials.yaml:/config/credentials.yaml:ro
-```
+- `smart_home_copilot.generate_suggestions`
 
-Either approach works – use whichever fits your setup best.
+Useful request parameters:
 
----
+- `all_entities`
+- `domains`
+- `entity_limit`
+- `custom_prompt`
 
-## 🛠️ Advanced Configuration
+Main output surface:
 
-### Global Settings
-
-* **Temperature Control:**
-    * Available for all providers
-    * Range: 0.0 (more focused) to 2.0 (more creative)
-    * Default: 0.7
-    * Configurable in both initial setup and options
-
-* **Token Management:**
-    * Separate input/output token limits
-    * Prevents excessive API usage
-    * Optimizes response length
-
----
-
-## ✍️ Usage
-
-### Automatic Suggestions
-
-The integration comes with example automations you can enable or adapt:
-
-* **On New Entities:** Automatically generates suggestions when new entities are added to Home Assistant, helping you quickly integrate them.
-* **Weekly Reviews:** Triggers a comprehensive analysis weekly (or at a custom interval you define in the automation), providing ongoing ideas.
-
-Find and enable these examples in Settings → Automations.
-
-### Manual Trigger
-
-You can trigger the suggestion generation manually using the service call:
-
-1.  Go to Developer Tools → **Services**.
-2.  Select the service `smart_home_copilot.generate_suggestions`.
-3.  Call the service. You can pass parameters to customize the request:
-    * `all_entities` (boolean, default: `false`): Set to `true` to consider all eligible entities, `false` to only consider entities added since the last successful run.
-    * `domains` (list of strings, optional): Limit the analysis to entities within specific domains (e.g., `['light', 'sensor']`).
-    * `entity_limit` (integer, optional): Set a maximum number of entities the AI should consider in this run. Useful for controlling prompt length and cost.
-    * `custom_prompt` (string, optional): Add a specific instruction for this particular run (e.g., "Suggest security automations for doors and windows.").
-
-### Dashboard Snippets
-
-The main sensor (`sensor.ai_automation_suggestions_<provider_name>`) exposes useful attributes for display on dashboards. Replace `<provider_name>` with the name you gave the integration instance (e.g., `openai`, `ollama`).
-
-* **Displaying the Description:**
-    ```jinja
-    {{ state_attr('sensor.ai_automation_suggestions_<provider_name>', 'description') }}
-    ```
-* **Displaying the YAML Block:**
-    ```jinja
-    {{ state_attr('sensor.ai_automation_suggestions_<provider_name>', 'yaml_block') }}
-    ```
-You can use Markdown cards or other card types to present this information cleanly in your Home Assistant dashboard.
-
----
-
-## 📊 Monitoring & Diagnostics
-
-The integration provides several sensors for monitoring:
-
-* **AI Automation Suggestions:** (`sensor.ai_automation_suggestions_<provider_name>`)
-    * State: `No Suggestions`, `New Suggestions Available`, `Suggestions Available`
-    * Attributes:
-        * `description`: Human-readable suggestion description
-        * `yaml_block`: Ready-to-use automation YAML
-        * `last_update`: Timestamp of last update
-        * `entities_processed`: List of analyzed entities
-        * `entities_processed_count`: Number of entities analyzed
-
-* **AI Provider Status:** (`sensor.ai_provider_status_<provider_name>`)
-    * State: `connected`, `error`, `disconnected`, `initializing`
-    * Attributes:
-        * `last_error_message`: Details of any errors
-        * `last_attempted_update`: Timestamp of last attempt
-
-* **Max Input/Output Tokens:** (`sensor.max_input_tokens_<provider_name>`, `sensor.max_output_tokens_<provider_name>`)
-    * Shows configured token limits
-    * Helps monitor API usage
-
-* **AI Model:** (`sensor.ai_model_in_use_<provider_name>`)
-    * Shows current model configuration
-    * Useful for multi-instance setups
-
-* **Last Error:** (`sensor.last_error_message_<provider_name>`)
-    * Detailed error tracking
-    * Includes stack traces for unexpected errors
-
----
-
-## 🔍 Error Handling & Troubleshooting
-
-* **Stack Traces:**
-    * Detailed error logging for unexpected issues
-    * Available in Home Assistant logs
-    * Helpful for debugging API issues
-
-* **Common Error Scenarios:**
-    * API authentication failures
-    * Network connectivity issues
-    * Token limit exceeded
-    * Model availability problems
-    * Response parsing errors
-
-* **Error Monitoring:**
-    * Use the Last Error sensor for real-time error tracking
-    * Check Home Assistant logs for stack traces
-    * Monitor provider status sensor for connection issues
-
----
-
-## 🔒 Security Notes
-
-* All API keys are stored securely using Home Assistant's secure storage
-* Password fields are properly masked in the UI
-* Local providers (Ollama, LocalAI) can be used for complete data privacy
-
----
-
-## Customization and Advanced Usage
-
-Beyond the basic configuration and service call parameters, you can further customize the integration's behavior:
-
-### Random Entity Selection
-
-By default, the integration uses randomized entity selection when `all_entities` is `true` (or the automatic weekly scan runs). This helps ensure variety in suggestions and prevents the AI from focusing only on the same initial set of entities.
-
-### Domain Filtering
-
-Use the `domains` parameter in the service call or your automation configuration to narrow the focus. This is very effective for getting suggestions for specific areas (e.g., only analyze `light` and `switch` entities in the `living_room` area - though area filtering is implicit based on the entities selected).
-
-### Entity Limit
-
-The `entity_limit` parameter is crucial for managing prompt size, particularly with models sensitive to input length or cost. Experiment to find a limit that provides good suggestions without hitting token limits or incurring excessive costs.
-
-### Custom Prompts
-
-The `custom_prompt` parameter allows you to be very specific about the type of suggestions you want for a particular run. Combine it with domain filtering for highly targeted results (e.g., `domains: ['climate'], custom_prompt: "Suggest automations to optimize heating/cooling based on occupancy and weather."`).
-
----
-
-## Implementing Automations
-
-1.  **Review Suggestions:** Check the persistent notifications or your dashboard card for new suggestions.
-2.  **Copy YAML:** The suggestions are provided as ready-to-use Home Assistant YAML snippets. Copy the `yaml_block` content.
-3.  **Add to Home Assistant:**
-    * Paste the YAML into your `automations.yaml` file and restart Home Assistant.
-    * Alternatively, use the Home Assistant Automation Editor UI: create a new automation, switch to YAML mode, and paste the snippet.
-4.  **Adapt as Needed:** While the suggestions are tailored, you may need to make minor adjustments to triggers, conditions, delays, or actions to perfectly match your preferences and devices.
-5.  **Test:** Always test new automations to ensure they function as expected before relying on them.
-
----
-
-## Sensors
-
-The integration provides two key sensors for monitoring:
-
-* **AI Automation Suggestions Sensor:** `sensor.ai_automation_suggestions_<provider_name>`
-    * State indicates the status (e.g., `idle`, `generating`, `suggestions_available`).
-    * Attributes contain the latest suggestions, including `description`, `yaml_block`, and potentially other details depending on the AI provider's response format.
-* **AI Provider Status Sensor:** `sensor.ai_provider_status_<provider_name>`
-    * State indicates the connection health (e.g., `connected`, `error`, `unavailable`).
-    * Attributes may provide additional details about the provider status or any errors encountered.
-
-Monitor these sensors to ensure the integration is functioning correctly.
-
----
-
-## ⚠️ Important Notes
-
-* **Privacy Considerations:** If using cloud-based AI providers, be aware that entity data (names, states, attributes) is sent to their servers. Consider using local AI models (LocalAI, Ollama) for full data control if privacy is a major concern.
-* **API Costs:** Some cloud providers charge for API usage based on tokens processed. Be mindful of this and use features like `entity_limit` and scheduled run frequency to manage potential costs. Monitor your provider's billing.
-* **No Guarantees:** The AI's suggestions are based on patterns and logical inference from the data provided. They are not guaranteed to be perfect or the most efficient solution for every scenario. **Always review suggestions thoroughly before implementing them in your live system.**
-* **AI Limitations:** Large language models can sometimes hallucinate or provide illogical suggestions. Use your judgment and knowledge of your home setup when reviewing.
-
----
-
-## 🧩 Troubleshooting
-
-| Symptom                                 | Check / Action                                                                                                                               |
-|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
-| **No suggestions available** | - Verify API key is correct.<br>- Check the `AI Provider Status` sensor for errors.<br>- Check the Home Assistant logs for errors related to the integration.<br>- Try triggering the service manually with a small `entity_limit` and no domain filters.<br>- Ensure you have enough entities/devices for meaningful suggestions. |
-| **AI Provider Status shows `error`** | - Inspect the Home Assistant log (`home-assistant.log`) for detailed error messages (look for `smarthomecopilot` and `processing error`).<br>- Check your network connection to the provider's server (if cloud-based) or your local server.<br>- Confirm your API key is active and has permissions.<br>- Ensure your local AI server is running and accessible. |
-| **Suggestion prompt is too long** | - Reduce the `entity_limit` parameter when triggering the service or configuring the automation.<br>- Use the `domains` filter to narrow the scope of entities analyzed.<br>- Shorten or simplify your `custom_prompt` if you are using one. |
-| **Unintended startup suggestions** | - Review your Home Assistant automations and scripts to ensure none are configured to call `smart_home_copilot.generate_suggestions` on startup or via events you didn't intend. |
-| **Suggestions are repetitive** | - Ensure `all_entities` is used (e.g., in a weekly automation) and consider enabling randomized entity selection.<br>- Try different `custom_prompt` values to steer the AI in a new direction.<br>- Increase the `entity_limit` to give the AI more data points (if prompt length allows). |
-| **Image links are broken in HACS/GitHub** | This has been addressed in this README version. Ensure the README file in your repository uses the corrected URLs provided. Clear your browser cache or wait for GitHub/HACS to refresh. |
-
-If you encounter issues not covered here, please open an issue on the GitHub repository with details from your Home Assistant logs.
-
----
-
-## Roadmap
-
-Future planned features and improvements:
-
-* **More Interactive Suggestions:** Explore feedback mechanisms to help the AI learn from user acceptance or rejection of suggestions.
-* **One-Click Automation Creation:** Streamline the process from reviewing a suggestion to creating the automation in Home Assistant.
-* **Expanded Localization:** Support for more languages through community contributions.
-* **Improved Entity/Device Context:** Enhance the information provided to the AI about device types, capabilities, and relationships.
-
----
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
-
----
-
-## Acknowledgments
-
-* **Home Assistant Community:** For providing a robust and extensible smart home platform.
-* **AI Providers:** OpenAI, Anthropic, Google, Groq, LocalAI, Ollama, Mistral, and Perplexity for developing and providing access to powerful language models.
-* **Contributors and Users:** For valuable feedback, testing, and contributions that help improve this project.
-
----
-
-## Contributions
-
-We welcome contributions! If you have ideas for new features, improvements, bug fixes, or translations, please feel free to open an issue or submit a pull request on the GitHub repository. Please follow standard development practices.
-If you use an AI agent to generate changes, review the project guidelines in [AGENTS.md](./AGENTS.md).
+- suggestion sensor with description and YAML attributes
+- provider status sensor
+- persistent notifications inside Home Assistant
 
 ## Development Setup
 
-This project requires **Python 3.11**. Install dependencies with:
+Use Python 3.11.
 
 ```bash
 pip install -r requirements.txt
-```
-
-The test suite relies on both `Home Assistant` and the
-`pytest-homeassistant-custom-component` plugin. Install them before running
-tests:
-
-```bash
 pip install homeassistant pytest-homeassistant-custom-component
+pytest -q
 ```
 
-You can use the provided helper script to set everything up. Ensure you are
-running **Python 3.11**, then run:
+You can also use the helper script:
 
 ```bash
 bash scripts/setup_tests.sh
 pytest -q
 ```
 
----
+## Validation
+
+Repository validation should keep these paths green:
+
+- `hassfest`
+- HACS validation
+- Python test suite
+- repo hygiene checks
+
+## Security Notes
+
+- never commit provider secrets or API keys
+- prefer local models if your Home Assistant snapshot data should stay fully local
+- review every generated automation before applying it
+
+## License
+
+MIT. See [LICENSE](LICENSE).
+
+## Contributing
+
+Contributions are welcome. If you use an AI agent while contributing, review [AGENTS.md](AGENTS.md) first.
 
 ## Disclaimer
 
-This is a custom component developed independently. It is not affiliated with, endorsed by, or officially supported by Home Assistant, Nabu Casa, or any of the mentioned AI providers. Use at your own discretion.
-
----
-
-## 🤝 Support the Project
-
-If you find this integration helpful and it saves you time and effort in automating your home, please consider supporting its development. Your support helps with maintenance, adding new features, and covering any potential costs associated with development and testing.
-
-[<img src="https://img.shields.io/badge/Buy&nbsp;me&nbsp;a&nbsp;coffee-Support&nbsp;Dev-yellow?style=for-the-badge&logo=buy-me-a-coffee" alt="Buy Me A Coffee">](https://coff.ee/fjoelnir)
-
----
-
-## Additional Information
-
-For further questions, discussions, or assistance, please visit the GitHub repository or the Home Assistant Community Forums thread (if one exists). Your feedback is highly valuable and helps shape the future direction of this project.
-
----
-
-## ❓ FAQ
-
-**1. How do I update the integration?**
-If installed via HACS, update directly through the HACS interface in Home Assistant. If installed manually, download the latest version of the files from the repository and replace the existing ones in your `custom_components/smarthomecopilot` folder, then restart Home Assistant.
-
-**2. Can I use this integration without a cloud API key?**
-Yes! You can use local AI models like those provided by LocalAI or Ollama running on your local network. This requires setting up and running the local AI server separately.
-
-**3. Is my Home Assistant data safe?**
-When using cloud-based AI providers, specific entity data (names, states, attributes) is sent to the provider's API for processing. Refer to the privacy policies of your chosen AI provider. Using local models keeps all data processing within your local network.
-
-**4. I found a bug or have a feature request. What should I do?**
-Please open an issue on the GitHub repository. Provide as much detail as possible, including steps to reproduce the bug, screenshots, and relevant logs. For feature requests, clearly describe the desired functionality and use case.
-
-**5. Can I get suggestions in languages other than English?**
-The quality of suggestions in other languages depends heavily on the AI model used. The integration structures the prompt in English, but you can experiment with custom prompts in other languages and see how the model responds. Community translations of the integration's UI and documentation are welcome!
-
----
-
-With the AI Automation Suggester, you gain an AI-powered ally to help you unlock your home’s full potential. Instead of being overwhelmed by possibilities, receive thoughtful, context-aware suggestions that make your Home Assistant automations more impactful, efficient, and enjoyable.
+This is an independent custom component. It is not affiliated with or endorsed by Home Assistant, Nabu Casa, or any AI provider.

@@ -1,0 +1,24 @@
+name: Repo Hygiene
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [develop, main]
+
+jobs:
+  hygiene:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Verify required files
+        shell: bash
+        run: |
+          test -f README.md
+          test -f AGENTS.md
+          test -f docs/STATUS.md
+          test -f docs/OPERATIONS.md
+          test -f .github/CODEOWNERS
+          test -f custom_components/smart_home_copilot/manifest.json
+          test -f hacs.json
