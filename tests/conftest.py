@@ -6,19 +6,19 @@ try:
 except ImportError:
     import importlib_metadata as _md
 
+from aiohttp.resolver import ThreadedResolver
+import homeassistant.helpers.aiohttp_client as ha_aiohttp_client
+import homeassistant.helpers.backports.aiohttp_resolver as ha_aiohttp_resolver
 import pytest
 
+class TestThreadedResolver(ThreadedResolver):
+    """Use a thread-based resolver to keep HA tests deterministic across platforms."""
+
+ha_aiohttp_resolver.AsyncResolver = TestThreadedResolver
+ha_aiohttp_client.AsyncResolver = TestThreadedResolver
+
 if sys.platform == "win32":
-    from aiohttp.resolver import ThreadedResolver
-    import homeassistant.helpers.aiohttp_client as ha_aiohttp_client
-    import homeassistant.helpers.backports.aiohttp_resolver as ha_aiohttp_resolver
     import pytest_socket
-
-    class WindowsThreadedResolver(ThreadedResolver):
-        """Avoid aiodns/proactor incompatibilities in Windows test runs."""
-
-    ha_aiohttp_resolver.AsyncResolver = WindowsThreadedResolver
-    ha_aiohttp_client.AsyncResolver = WindowsThreadedResolver
 
     if not hasattr(os, "fchmod"):
         def _noop_fchmod(_fd: int, _mode: int) -> None:
