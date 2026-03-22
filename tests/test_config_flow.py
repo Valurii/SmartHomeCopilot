@@ -47,8 +47,9 @@ async def test_config_flow_creates_entry(tmp_path):
                         CONF_MAX_OUTPUT_TOKENS: 100,
                     }
                 )
+            await hass.async_stop(force=True)
+            await hass.async_block_till_done()
     assert result["type"] == "create_entry"
-    await hass.async_stop(force=True)
 
 
 @pytest.fixture(autouse=True)
