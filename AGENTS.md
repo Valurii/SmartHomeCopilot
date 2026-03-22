@@ -27,13 +27,16 @@ It is provided as a custom integration that generates YAML automations.
 ## Technical Reference
 
 - Integration folder: `custom_components/smart_home_copilot/`
-- Automation context: `data/context/automation.yaml`
-- User configuration: `config/configuration.yaml`
-- System prompts: `core/prompts/system_prompt.txt`
+- Dashboard assets: `custom_components/shc_dashboard/`
+- Example Home Assistant config: `ha_config/`
+- Tests: `tests/`
+- Repo status: `docs/STATUS.md`
+- Maintainer workflow: `docs/OPERATIONS.md`
 
 ## Notes for GPT‑Based Agents
 
 - This file is used as system context when prompting.
 - Follow Markdown syntax.
 - Maximize information value and minimize tokens.
+- Keep README, `manifest.json`, and HACS metadata aligned with the actual repo owner and supported behavior.
 
